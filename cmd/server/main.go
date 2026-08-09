@@ -4,7 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/pranav718/tunneru/internal/server"
 	"github.com/spf13/cobra"
+)
+
+var (
+	controlAddr string
 )
 
 var rootCmd = &cobra.Command{
@@ -12,9 +17,16 @@ var rootCmd = &cobra.Command{
 	Short: "tunneru tunnel server: expose local ports to the internet",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("tunneru server v0.1.0")
-		fmt.Println("control port: 7000")
-		fmt.Println("ready. (no listeners started yet)")
+		cs := server.NewControlServer(controlAddr)
+		if err := cs.Start(); err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			os.Exit(1)
+		}
 	},
+}
+
+func init() {
+	rootCmd.Flags().StringVar(&controlAddr, "control-addr", ":7000", "address for the control server")
 }
 
 func main() {
