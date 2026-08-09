@@ -5,7 +5,12 @@ import (
 	"os"
 	"strconv"
 
+	tunnelclient "github.com/pranav718/tunneru/internal/client"
 	"github.com/spf13/cobra"
+)
+
+var (
+	serverAddr string
 )
 
 var rootCmd = &cobra.Command{
@@ -18,10 +23,18 @@ var rootCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "invalid port: %s\n", args[0])
 			os.Exit(1)
 		}
+
 		fmt.Println("tunneru client v0.1.0")
-		fmt.Printf("forwarding to: localhost:%d\n", port)
-		fmt.Println("ready. (no tunnel started yet)")
+		t := tunnelclient.NewTunnel(serverAddr, port)
+		if err := t.Connect(); err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			os.Exit(1)
+		}
 	},
+}
+
+func init() {
+	rootCmd.Flags().StringVar(&serverAddr, "server", "localhost:7000", "tunneru server address")
 }
 
 func main() {
