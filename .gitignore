@@ -1,8 +1,8 @@
-# Binaries
+# Binaries (root-only, so cmd/server/ and internal/client/ aren't ignored)
 tunneru-server
 tunneru-client
-server
-client
+/server
+/client
 
 # Go build artifacts
 *.exe
