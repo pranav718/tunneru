@@ -11,6 +11,7 @@ import (
 
 var (
 	serverAddr string
+	subdomain  string
 )
 
 var rootCmd = &cobra.Command{
@@ -25,7 +26,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		fmt.Println("tunneru client v0.1.0")
-		t := tunnelclient.NewTunnel(serverAddr, port)
+		t := tunnelclient.NewTunnel(serverAddr, port, subdomain)
 		if err := t.Connect(); err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
@@ -35,6 +36,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.Flags().StringVar(&serverAddr, "server", "localhost:7000", "tunneru server address")
+	rootCmd.Flags().StringVar(&subdomain, "subdomain", "", "requested subdomain (random if empty)")
 }
 
 func main() {
