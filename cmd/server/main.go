@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.Flags().StringVar(&controlAddr, "control-addr", ":7000", "address for the control server")
+	rootCmd.Flags().StringVar(&controlAddr, "control-addr", ":7001", "address for the control server")
 	rootCmd.Flags().StringVar(&domain, "domain", "tunneru.dev", "base domain for tunnel URLs")
 }
 

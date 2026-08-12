@@ -35,7 +35,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.Flags().StringVar(&serverAddr, "server", "localhost:7000", "tunneru server address")
+	rootCmd.Flags().StringVar(&serverAddr, "server", "localhost:7001", "tunneru server address")
 	rootCmd.Flags().StringVar(&subdomain, "subdomain", "", "requested subdomain (random if empty)")
 }
 

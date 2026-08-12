@@ -2,46 +2,75 @@ package client
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"net"
+
+	"github.com/pranav718/tunneru/internal/proto"
 )
 
 type Tunnel struct {
-	serverAddr	string
-	localPort	int
-	conn		net.Conn
+	serverAddr  string
+	localPort   int
+	subdomain   string
+	conn        net.Conn
 }
 
-func NewTunnel(serverAddr string, localPort int) *Tunnel {
+func NewTunnel(serverAddr string, localPort int, subdomain string) *Tunnel {
 	return &Tunnel{
-		serverAddr: serverAddr, localPort: localPort,
+		serverAddr: serverAddr,
+		localPort:  localPort,
+		subdomain:  subdomain,
 	}
 }
 
-func(t *Tunnel) Connect() error{	
+func (t *Tunnel) Connect() error {
 	var err error
 	t.conn, err = net.Dial("tcp", t.serverAddr)
-	
-	if err!=nil {
+	if err != nil {
 		return fmt.Errorf("tunnel connect: %w", err)
 	}
 	log.Printf("connected to server at %s", t.serverAddr)
-	log.Printf("forwarding to localhost:%d", t.localPort)
 
 	defer func() {
 		t.conn.Close()
-		log.Printf("tunnel closed")
+		log.Printf("disconnected from server")
 	}()
 
-	buf := make([]byte, 1024)
+	reg := &proto.Message{
+		Type:      proto.TypeRegister,
+		Subdomain: t.subdomain,
+	}
+	if err := proto.Encode(t.conn, reg); err != nil {
+		return fmt.Errorf("tunnel register send: %w", err)
+	}
+
+	resp, err := proto.Decode(t.conn)
+	if err != nil {
+		return fmt.Errorf("tunnel register response: %w", err)
+	}
+
+	switch resp.Type {
+	case proto.TypeRegistered:
+		log.Printf("tunnel active: %s", resp.URL)
+		log.Printf("forwarding to localhost:%d", t.localPort)
+	case proto.TypeError:
+		return fmt.Errorf("registration rejected: %s", resp.Error)
+	default:
+		return fmt.Errorf("unexpected response type: %s", resp.Type)
+	}
+
 	for {
-		_, err := t.conn.Read(buf)
-		if err!=nil {
-			if err!= io.EOF {
-				log.Printf("server read error: %v", err)
-			}
+		msg, err := proto.Decode(t.conn)
+		if err != nil {
+			log.Printf("server read error: %v", err)
 			return nil
+		}
+
+		switch msg.Type {
+		case proto.TypePong:
+			log.Printf("pong received")
+		default:
+			log.Printf("unhandled message type: %s", msg.Type)
 		}
 	}
 }
