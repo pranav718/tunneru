@@ -4,8 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"github.com/pranav718/tunneru/internal/proto"
+)
+
+const (
+	pingInterval = 30 * time.Second
 )
 
 type Tunnel struct {
@@ -59,6 +64,10 @@ func (t *Tunnel) Connect() error {
 		return fmt.Errorf("unexpected response type: %s", resp.Type)
 	}
 
+	// start heartbeat ping loop in background
+	go t.pingLoop()
+
+	// message loop
 	for {
 		msg, err := proto.Decode(t.conn)
 		if err != nil {
@@ -68,9 +77,23 @@ func (t *Tunnel) Connect() error {
 
 		switch msg.Type {
 		case proto.TypePong:
-			log.Printf("pong received")
+			// heartbeat acknowledged
 		default:
 			log.Printf("unhandled message type: %s", msg.Type)
+		}
+	}
+}
+
+// pingLoop sends a ping to the server every 30 seconds
+func (t *Tunnel) pingLoop() {
+	ticker := time.NewTicker(pingInterval)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		ping := &proto.Message{Type: proto.TypePing}
+		if err := proto.Encode(t.conn, ping); err != nil {
+			log.Printf("ping send error: %v", err)
+			return
 		}
 	}
 }
