@@ -78,6 +78,11 @@ func (s *Session) AcceptStream() (*Stream, error) {
 	return stream, nil
 }
 
+func (s *Session) AcceptStreamChan() <-chan *Stream {
+	return s.acceptCh
+}
+
+
 func (s *Session) Close() error {
 	if s.closed.Swap(true) {
 		return nil
