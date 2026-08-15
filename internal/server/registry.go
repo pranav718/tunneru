@@ -7,6 +7,8 @@ import (
 	"math/big"
 	"net"
 	"sync"
+	
+	"github.com/pranav718/tunneru/internal/mux"
 )
 
 const subdomainChars = "abcdefghijklmnopqrstuvwxyz0123456789"
@@ -16,6 +18,7 @@ type TunnelInfo struct {
 	Subdomain  string
 	URL        string
 	Conn       net.Conn
+	Session    *mux.Session
 	RemoteAddr string
 }
 
@@ -32,7 +35,7 @@ func NewRegistry(domain string) *Registry {
 	}
 }
 
-func (r *Registry) Register(subdomain string, conn net.Conn) (*TunnelInfo, error) { //this gonna add a tunnel to the registry//if subdomain is empty then create a random one and some more obvious stuffs
+func (r *Registry) Register(subdomain string, conn net.Conn, session *mux.Session) (*TunnelInfo, error) { //this gonna add a tunnel to the registry//if subdomain is empty then create a random one and some more obvious stuffs
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -52,6 +55,7 @@ func (r *Registry) Register(subdomain string, conn net.Conn) (*TunnelInfo, error
 		Subdomain:  subdomain,
 		URL:        fmt.Sprintf("%s.%s", subdomain, r.domain),
 		Conn:       conn,
+		Session:    session,
 		RemoteAddr: conn.RemoteAddr().String(),
 	}
 
@@ -102,7 +106,7 @@ func (r *Registry) generateSubdomain() (string, error) {
 			sub[i] = subdomainChars[idx.Int64()]
 		}
 		candidate := string(sub)
-		
+
 		if _, exists := r.tunnels[candidate]; !exists {
 			return candidate, nil
 		}
