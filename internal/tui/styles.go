@@ -38,7 +38,7 @@ const (
 
 var HeaderStyle = lipgloss.NewStyle().
 	Background(lipgloss.Color(ColorCardPanel)).
-	Padding(1, 2).
+	Padding(0, 2).
 	Border(lipgloss.RoundedBorder()).
 	BorderForeground(lipgloss.Color(ColorBorderNormal))
 
@@ -62,18 +62,14 @@ func StatusPillStyle(status string) lipgloss.Style {
 		color = ColorTextSecondary
 	}
 	return lipgloss.NewStyle().
-		Foreground(lipgloss.Color(color)).
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(color)).
-		Padding(0, 1)
+		Foreground(lipgloss.Color(color))
 }
 
 var InfoCardStyle = lipgloss.NewStyle().
 	Background(lipgloss.Color(ColorCardPanel)).
 	Border(lipgloss.RoundedBorder()).
 	BorderForeground(lipgloss.Color(ColorBorderNormal)).
-	Padding(1, 2).
-	MarginTop(1)
+	Padding(1, 2)
 
 var InfoLabelStyle = lipgloss.NewStyle().
 	Foreground(lipgloss.Color(ColorTextSecondary)).
@@ -83,17 +79,11 @@ var InfoValueStyle = lipgloss.NewStyle().
 	Foreground(lipgloss.Color(ColorTextPrimary))
 
 var TableHeaderStyle = lipgloss.NewStyle().
-	Background(lipgloss.Color(ColorCardPanel)).
 	Foreground(lipgloss.Color(ColorTextSecondary)).
 	Padding(0, 2)
 
 func RowStyle(alternate bool) lipgloss.Style {
-	bg := ColorBackground
-	if alternate {
-		bg = ColorCardAlt
-	}
 	return lipgloss.NewStyle().
-		Background(lipgloss.Color(bg)).
 		Padding(0, 2)
 }
 
@@ -123,9 +113,6 @@ func MethodBadgeStyle(method string) lipgloss.Style {
 	}
 	return lipgloss.NewStyle().
 		Foreground(lipgloss.Color(color)).
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(color)).
-		Padding(0, 1).
 		Width(8)
 }
 
@@ -151,9 +138,6 @@ func StatusBadgeStyle(code int) lipgloss.Style {
 	}
 	return lipgloss.NewStyle().
 		Foreground(lipgloss.Color(color)).
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color(color)).
-		Padding(0, 1).
 		Width(16).
 		Bold(bold)
 }

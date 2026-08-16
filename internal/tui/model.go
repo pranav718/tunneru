@@ -128,13 +128,10 @@ func (m Model) View() string {
 
 func (m Model) renderHeader() string {
 	brand := BrandStyle.Render("tunneru")
-	version := VersionStyle.Render("v0.1.0")
-
-	statusDot := "●"
-	pill := StatusPillStyle(m.Status).Render(statusDot + " " + m.Status)
+	pill := StatusPillStyle(m.Status).Render(m.Status)
 
 	left := brand
-	right := version + "  " + pill
+	right := pill
 
 	gap := m.Width - lipgloss.Width(left) - lipgloss.Width(right) - 6
 	if gap < 1 {
@@ -142,7 +139,7 @@ func (m Model) renderHeader() string {
 	}
 
 	content := left + strings.Repeat(" ", gap) + right
-	return HeaderStyle.Width(m.Width - 2).Render(content)
+	return HeaderStyle.Width(m.Width - 4).Render(content)
 }
 
 func (m Model) renderInfoCard() string {
@@ -152,7 +149,7 @@ func (m Model) renderInfoCard() string {
 			"  " +
 			InfoLabelStyle.Render("local") +
 			InfoValueStyle.Render(fmt.Sprintf("http://localhost:%d", m.LocalPort))
-		return InfoCardStyle.Width(m.Width - 2).Render(line)
+		return InfoCardStyle.Width(m.Width - 4).Render(line)
 	}
 
 	lines := []string{
@@ -160,7 +157,7 @@ func (m Model) renderInfoCard() string {
 		InfoLabelStyle.Render("forwarding") + InfoValueStyle.Render(fmt.Sprintf("http://localhost:%d", m.LocalPort)),
 		InfoLabelStyle.Render("inspect") + InfoValueStyle.Render(m.InspectURL),
 	}
-	return InfoCardStyle.Width(m.Width - 2).Render(strings.Join(lines, "\n"))
+	return InfoCardStyle.Width(m.Width - 4).Render(strings.Join(lines, "\n"))
 }
 
 func (m Model) renderDivider() string {
@@ -187,7 +184,7 @@ func (m Model) renderTableHeader() string {
 	}
 
 	row := strings.Join(cols, "  ")
-	return TableHeaderStyle.Width(m.Width - 2).Render(row)
+	return TableHeaderStyle.Width(m.Width - 4).Render(row)
 }
 
 func (m Model) renderRequestRows() string {
@@ -230,15 +227,15 @@ func (m Model) renderRequestRows() string {
 		}
 
 		statusText := fmt.Sprintf("%d %s", req.StatusCode, req.StatusText)
-		if len(statusText) > 14 {
-			statusText = statusText[:14]
+		if len(statusText) > 15 {
+			statusText = statusText[:15]
 		}
 
 		cols := []string{
 			TimeStyle.Render(timeStr),
 		}
 		if m.Width >= 60 {
-			cols = append(cols, MethodBadgeStyle(req.Method).Render(strings.ToLower(req.Method)))
+			cols = append(cols, MethodBadgeStyle(req.Method).Render(strings.ToUpper(req.Method)))
 		}
 		cols = append(cols, PathStyle.Width(pathWidth).Render(path))
 		cols = append(cols, StatusBadgeStyle(req.StatusCode).Render(statusText))
@@ -248,7 +245,7 @@ func (m Model) renderRequestRows() string {
 		}
 
 		row := strings.Join(cols, "  ")
-		rows = append(rows, RowStyle(alternate).Width(m.Width-2).Render(row))
+		rows = append(rows, RowStyle(alternate).Render(row))
 	}
 
 	return strings.Join(rows, "\n")
@@ -270,11 +267,12 @@ func (m Model) renderStatusBar() string {
 
 	right := KeybindStyle.Render("q quit   c clear")
 
-	gap := m.Width - lipgloss.Width(left) - lipgloss.Width(right) - 6
+	cardInnerWidth := m.Width - 6
+	gap := cardInnerWidth - lipgloss.Width(left) - lipgloss.Width(right)
 	if gap < 1 {
 		gap = 1
 	}
 
 	content := left + strings.Repeat(" ", gap) + right
-	return StatusBarStyle.Width(m.Width - 2).Render(content)
+	return StatusBarStyle.Width(m.Width - 6).Render(content)
 }
