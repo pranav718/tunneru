@@ -7,13 +7,16 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/pranav718/tunneru/internal/mux"
+	"github.com/pranav718/tunneru/internal/tui"
 )
 
 type Forwarder struct {
 	localPort  int
 	httpClient *http.Client
+	OnRequest  func(tui.RequestEvent)
 }
 
 func NewForwarder(localPort int) *Forwarder {
@@ -54,9 +57,24 @@ func (f *Forwarder) HandleStream(stream *mux.Stream) {
 	localReq.Header = req.Header
 	localReq.Host = fmt.Sprintf("localhost:%d", f.localPort)
 
+	start := time.Now()
 	resp, err := f.httpClient.Do(localReq)
+	latency := time.Since(start)
+
 	if err != nil {
 		log.Printf("forwarder: error connecting to localhost:%d: %v", f.localPort, err)
+
+		if f.OnRequest != nil {
+			f.OnRequest(tui.RequestEvent{
+				Timestamp:  time.Now(),
+				Method:     req.Method,
+				Path:       req.URL.Path,
+				StatusCode: 502,
+				StatusText: "Bad Gateway",
+				LatencyMs:  int(latency.Milliseconds()),
+			})
+		}
+
 		badGateway := &http.Response{
 			StatusCode: http.StatusBadGateway,
 			ProtoMajor: 1,
@@ -68,6 +86,20 @@ func (f *Forwarder) HandleStream(stream *mux.Stream) {
 		return
 	}
 	defer resp.Body.Close()
+
+	if f.OnRequest != nil {
+		f.OnRequest(tui.RequestEvent{
+			Timestamp:       time.Now(),
+			Method:          req.Method,
+			Path:            req.URL.Path,
+			StatusCode:      resp.StatusCode,
+			StatusText:      http.StatusText(resp.StatusCode),
+			LatencyMs:       int(latency.Milliseconds()),
+			ContentLength:   resp.ContentLength,
+			RequestHeaders:  req.Header,
+			ResponseHeaders: resp.Header,
+		})
+	}
 
 	if err := resp.Write(stream); err != nil {
 		log.Printf("forwarder: error writing response to stream: %v", err)
