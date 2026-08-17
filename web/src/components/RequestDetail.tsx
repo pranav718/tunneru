@@ -122,7 +122,7 @@ export const RequestDetail: React.FC<RequestDetailProps> = ({
             <div className="flex items-center gap-4 text-xs font-mono text-[var(--text-secondary)]">
               <div className="flex items-center gap-1.5">
                 <Clock size={13} className="text-[var(--text-dim)]" />
-                <span>{new Date(request.timestamp).toLocaleString()}</span>
+                <span suppressHydrationWarning>{new Date(request.timestamp).toLocaleString()}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-[var(--text-dim)]">Latency:</span>

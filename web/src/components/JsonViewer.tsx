@@ -38,7 +38,12 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
   const highlightJson = (json: string) => {
     if (!isJson) return json;
 
-    return json.replace(
+    const escaped = json
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    return escaped.replace(
       /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
       (match) => {
         let cls = 'text-[var(--status-warning)]';

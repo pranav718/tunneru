@@ -143,7 +143,7 @@ export const RequestList: React.FC<RequestListProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between text-[11px] font-mono text-[var(--text-dim)]">
-                  <span>{timeStr}</span>
+                  <span suppressHydrationWarning>{timeStr}</span>
                   <span className={req.latency_ms > 200 ? 'text-[var(--status-error)]' : req.latency_ms > 50 ? 'text-[var(--status-warning)]' : 'text-[var(--text-secondary)]'}>
                     {req.latency_ms}ms
                   </span>
