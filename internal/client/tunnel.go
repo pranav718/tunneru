@@ -6,28 +6,42 @@ import (
 	"net"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/pranav718/tunneru/internal/inspection"
 	"github.com/pranav718/tunneru/internal/mux"
 	"github.com/pranav718/tunneru/internal/proto"
 	"github.com/pranav718/tunneru/internal/tui"
 )
 
 type Tunnel struct {
-	serverAddr string
-	localPort  int
-	subdomain  string
-	forwarder  *Forwarder
+	serverAddr  string
+	localPort   int
+	subdomain   string
+	inspectAddr string
+	forwarder   *Forwarder
+	inspector   *inspection.Server
 }
 
 func NewTunnel(serverAddr string, localPort int, subdomain string) *Tunnel {
+	inspectAddr := "127.0.0.1:4040"
+	inspector := inspection.NewServer(inspectAddr, localPort)
+
 	return &Tunnel{
-		serverAddr: serverAddr,
-		localPort:  localPort,
-		subdomain:  subdomain,
-		forwarder:  NewForwarder(localPort),
+		serverAddr:  serverAddr,
+		localPort:   localPort,
+		subdomain:   subdomain,
+		inspectAddr: inspectAddr,
+		forwarder:   NewForwarder(localPort),
+		inspector:   inspector,
 	}
 }
 
 func (t *Tunnel) Connect() error {
+	go func() {
+		if err := t.inspector.Start(); err != nil {
+			log.Printf("inspect server error: %v", err)
+		}
+	}()
+
 	conn, err := net.Dial("tcp", t.serverAddr)
 	if err != nil {
 		return fmt.Errorf("tunnel connect: %w", err)
@@ -52,6 +66,10 @@ func (t *Tunnel) Connect() error {
 	}
 
 	var program *tea.Program
+
+	t.forwarder.OnInspection = func(record *inspection.RequestRecord) {
+		t.inspector.Record(record)
+	}
 
 	t.forwarder.OnRequest = func(event tui.RequestEvent) {
 		tui.Send(program, tui.EventMsg{
@@ -83,7 +101,7 @@ func (t *Tunnel) Connect() error {
 	config := tui.TUIConfig{
 		TunnelURL:  tunnelURL,
 		LocalPort:  t.localPort,
-		InspectURL: "http://localhost:4040",
+		InspectURL: fmt.Sprintf("http://%s", t.inspectAddr),
 	}
 	return tui.Run(config, &program)
 }
