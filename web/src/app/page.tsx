@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
+import { TechnicalBackground } from '@/components/TechnicalBackground';
 import { Header } from '@/components/Header';
 import { RequestList } from '@/components/RequestList';
 import { RequestDetail } from '@/components/RequestDetail';
@@ -108,25 +109,47 @@ export default function DashboardPage() {
   const selectedRequest = requests.find((r) => r.id === selectedId) || null;
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-[var(--bg-main)]">
-      <Header connected={connected} requests={requests} onClear={handleClear} />
+    <div className="min-h-screen relative flex items-center justify-center p-0 sm:p-4 md:p-6 lg:p-8 bg-[var(--bg-main)] selection:bg-[var(--text-primary)] selection:text-[var(--bg-main)]">
+      <TechnicalBackground />
 
-      <div className="flex flex-1 overflow-hidden">
-        <RequestList
-          requests={requests}
-          selectedId={selectedId}
-          onSelect={(id) => setSelectedId(id)}
-          search={search}
-          onSearchChange={setSearch}
-          methodFilter={methodFilter}
-          onMethodFilterChange={setMethodFilter}
-        />
+      <div className="relative z-10 w-full max-w-[1480px] h-[100vh] sm:h-[94vh] flex flex-col rounded-none sm:rounded-xl border border-[var(--border-normal)] bg-[var(--canvas-bg)] shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden">
+        
+        <div className="h-6 bg-[#171215] border-b border-[var(--border-subtle)] px-4 flex items-center justify-between text-[10px] font-mono text-[var(--text-dim)] select-none">
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3a2f35]" />
+              <span>TUNNERU_CANVAS_V1</span>
+            </span>
+            <span className="text-[#3a2f35]">/</span>
+            <span>INSPECT_HOST:4040</span>
+          </div>
 
-        <RequestDetail
-          request={selectedRequest}
-          onReplay={handleReplay}
-          isReplaying={isReplaying}
-        />
+          <div className="flex items-center gap-3">
+            <span>GRID: 32PX</span>
+            <span className="text-[#3a2f35]">/</span>
+            <span className="text-[var(--text-secondary)]">BUFFER: 100 REQS</span>
+          </div>
+        </div>
+
+        <Header connected={connected} requests={requests} onClear={handleClear} />
+
+        <div className="flex flex-1 overflow-hidden">
+          <RequestList
+            requests={requests}
+            selectedId={selectedId}
+            onSelect={(id) => setSelectedId(id)}
+            search={search}
+            onSearchChange={setSearch}
+            methodFilter={methodFilter}
+            onMethodFilterChange={setMethodFilter}
+          />
+
+          <RequestDetail
+            request={selectedRequest}
+            onReplay={handleReplay}
+            isReplaying={isReplaying}
+          />
+        </div>
       </div>
     </div>
   );
