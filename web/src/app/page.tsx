@@ -27,7 +27,6 @@ export default function DashboardPage() {
         }
       }
     } catch {
-      //backend may not be active yet
     }
   };
 
@@ -51,10 +50,8 @@ export default function DashboardPage() {
             const updated = [record, ...prev.filter((r) => r.id !== record.id)];
             return updated;
           });
-
           setSelectedId((curr) => curr || record.id);
         } catch {
-          //ignore parsing error
         }
       };
 
@@ -84,7 +81,7 @@ export default function DashboardPage() {
       setRequests([]);
       setSelectedId(null);
     } catch (err) {
-      console.error('Failed to clear requests:', err);
+      console.error('clear failed:', err);
     }
   };
 
@@ -100,7 +97,7 @@ export default function DashboardPage() {
         setSelectedId(newRecord.id);
       }
     } catch (err) {
-      console.error('Replay failed:', err);
+      console.error('replay failed:', err);
     } finally {
       setIsReplaying(false);
     }
@@ -109,28 +106,10 @@ export default function DashboardPage() {
   const selectedRequest = requests.find((r) => r.id === selectedId) || null;
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-0 sm:p-4 md:p-6 lg:p-8 bg-[var(--bg-main)] selection:bg-[var(--text-primary)] selection:text-[var(--bg-main)]">
+    <div className="h-screen w-screen flex items-center justify-center bg-[var(--bg-main)]">
       <TechnicalBackground />
 
-      <div className="relative z-10 w-full max-w-[1480px] h-[100vh] sm:h-[94vh] flex flex-col rounded-none sm:rounded-xl border border-[var(--border-normal)] bg-[var(--canvas-bg)] shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden">
-        
-        <div className="h-6 bg-[#171215] border-b border-[var(--border-subtle)] px-4 flex items-center justify-between text-[10px] font-mono text-[var(--text-dim)] select-none">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#3a2f35]" />
-              <span>TUNNERU_CANVAS_V1</span>
-            </span>
-            <span className="text-[#3a2f35]">/</span>
-            <span>INSPECT_HOST:4040</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span>GRID: 32PX</span>
-            <span className="text-[#3a2f35]">/</span>
-            <span className="text-[var(--text-secondary)]">BUFFER: 100 REQS</span>
-          </div>
-        </div>
-
+      <div className="relative z-10 w-full h-full xl:w-[1400px] xl:h-[92vh] xl:rounded-lg flex flex-col border border-[var(--border-normal)] bg-[var(--canvas-bg)] overflow-hidden xl:shadow-[0_24px_80px_rgba(0,0,0,0.5)]">
         <Header connected={connected} requests={requests} onClear={handleClear} />
 
         <div className="flex flex-1 overflow-hidden">
