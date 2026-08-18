@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Play, Copy, Check, Clock, Server, FileText, Send } from 'lucide-react';
+import { Play, Copy, Check, Clock } from 'lucide-react';
 import { RequestRecord } from '@/types';
 import { JsonViewer } from './JsonViewer';
 
@@ -11,7 +11,24 @@ interface RequestDetailProps {
   isReplaying: boolean;
 }
 
-type TabType = 'headers' | 'payload' | 'response' | 'raw';
+type TabType = 'payload' | 'headers' | 'response' | 'raw';
+
+const methodColor = (method: string) => {
+  const map: Record<string, string> = {
+    GET: 'var(--method-get)',
+    POST: 'var(--method-post)',
+    PUT: 'var(--method-put)',
+    DELETE: 'var(--method-delete)',
+    PATCH: 'var(--method-patch)',
+  };
+  return map[method] || 'var(--text-dim)';
+};
+
+const statusColor = (code: number) => {
+  if (code >= 200 && code < 300) return 'var(--status-success)';
+  if (code >= 300 && code < 400) return 'var(--status-warning)';
+  return 'var(--status-error)';
+};
 
 export const RequestDetail: React.FC<RequestDetailProps> = ({
   request,
@@ -23,13 +40,10 @@ export const RequestDetail: React.FC<RequestDetailProps> = ({
 
   if (!request) {
     return (
-      <main className="flex-1 flex flex-col items-center justify-center p-12 text-center text-[var(--text-dim)] font-mono text-sm select-none">
-        <Server size={36} className="mb-3 opacity-30 text-[var(--text-secondary)]" />
-        <p className="text-base text-[var(--text-secondary)] font-medium mb-1">
-          No request selected
-        </p>
-        <p className="text-xs">
-          Select a request from the sidebar to inspect its payload, headers, and response.
+      <main className="flex-1 flex flex-col items-center justify-center p-12 text-center select-none">
+        <p className="text-[13px] text-[var(--text-secondary)] mb-1">no request selected</p>
+        <p className="text-[11px] text-[var(--text-dim)]">
+          select a request from the sidebar to inspect it
         </p>
       </main>
     );
@@ -41,48 +55,29 @@ export const RequestDetail: React.FC<RequestDetailProps> = ({
     setTimeout(() => setCopiedUrl(false), 2000);
   };
 
-  const getStatusBadge = (code: number, text: string) => {
-    let color = 'text-[var(--status-success)] border-[var(--status-success)] bg-[rgba(183,241,224,0.06)]';
-    if (code >= 300 && code < 400) {
-      color = 'text-[var(--status-warning)] border-[var(--status-warning)] bg-[rgba(251,202,137,0.06)]';
-    } else if (code >= 400) {
-      color = 'text-[var(--status-error)] border-[var(--status-error)] bg-[rgba(233,131,137,0.06)]';
-    }
-
-    return (
-      <span className={`px-2.5 py-1 text-xs font-mono font-semibold rounded border ${color}`}>
-        {code} {text}
-      </span>
-    );
-  };
-
-  const formatHeadersTable = (headers: Record<string, string[]>) => {
+  const formatHeaders = (headers: Record<string, string[]>) => {
     if (!headers || Object.keys(headers).length === 0) {
       return (
-        <div className="p-6 text-center text-[var(--text-dim)] font-mono text-xs">
-          No headers recorded
+        <div className="p-4 text-center text-[var(--text-dim)] text-[11px]">
+          no headers
         </div>
       );
     }
 
     return (
-      <div className="rounded-lg border border-[var(--border-normal)] bg-[var(--card-alt)] overflow-hidden font-mono text-xs">
-        <table className="w-full text-left divide-y divide-[var(--border-subtle)]">
-          <thead className="bg-[var(--card-panel)] text-[var(--text-secondary)] uppercase text-[10px] tracking-wider">
+      <div className="border border-[var(--border-subtle)] rounded overflow-hidden">
+        <table className="w-full text-left text-[11px]">
+          <thead className="bg-[var(--card-panel)] text-[var(--text-dim)] text-[10px] uppercase tracking-wider">
             <tr>
-              <th className="px-4 py-2.5 font-semibold w-1/3">Header</th>
-              <th className="px-4 py-2.5 font-semibold">Value</th>
+              <th className="px-3 py-1.5 font-medium w-1/3">header</th>
+              <th className="px-3 py-1.5 font-medium">value</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--border-subtle)]">
             {Object.entries(headers).map(([key, values]) => (
               <tr key={key} className="hover:bg-[var(--card-hover)] transition-colors">
-                <td className="px-4 py-2 text-[var(--text-secondary)] font-medium align-top">
-                  {key}
-                </td>
-                <td className="px-4 py-2 text-[var(--text-primary)] break-all select-text">
-                  {values.join(', ')}
-                </td>
+                <td className="px-3 py-1.5 text-[var(--text-secondary)] align-top">{key}</td>
+                <td className="px-3 py-1.5 text-[var(--text-primary)] break-all select-text">{values.join(', ')}</td>
               </tr>
             ))}
           </tbody>
@@ -91,125 +86,113 @@ export const RequestDetail: React.FC<RequestDetailProps> = ({
     );
   };
 
-  const rawHttpRequest = `${request.method} ${request.path}${request.query ? '?' + request.query : ''} ${request.proto || 'HTTP/1.1'}\n` +
+  const rawHttp = `${request.method} ${request.path}${request.query ? '?' + request.query : ''} ${request.proto || 'HTTP/1.1'}\n` +
     Object.entries(request.request_headers || {})
       .map(([k, v]) => `${k}: ${v.join(', ')}`)
       .join('\n') +
     (request.request_body ? `\n\n${request.request_body}` : '');
 
-  return (
-    <main className="flex-1 flex flex-col h-[calc(100vh-3.5rem)] overflow-y-auto bg-[var(--bg-main)]">
-      <div className="p-6 border-b border-[var(--border-normal)] bg-[var(--card-panel)]">
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div className="space-y-1.5 flex-1 min-w-0">
-            <div className="flex items-center gap-2.5">
-              <span className="px-2 py-0.5 text-xs font-mono font-bold rounded bg-[var(--card-alt)] border border-[var(--border-subtle)] text-[var(--method-get)]">
-                {request.method}
-              </span>
-              <h2 className="text-base font-mono font-semibold text-[var(--text-primary)] truncate" title={request.path}>
-                {request.path}
-                {request.query && <span className="text-[var(--text-dim)]">?{request.query}</span>}
-              </h2>
-              <button
-                onClick={copyUrl}
-                title="Copy Path"
-                className="p-1 text-[var(--text-dim)] hover:text-[var(--text-primary)] rounded cursor-pointer transition-colors"
-              >
-                {copiedUrl ? <Check size={14} className="text-[var(--status-success)]" /> : <Copy size={14} />}
-              </button>
-            </div>
+  const tabs: { key: TabType; label: string }[] = [
+    { key: 'payload', label: 'request' },
+    { key: 'headers', label: 'headers' },
+    { key: 'response', label: 'response' },
+    { key: 'raw', label: 'raw' },
+  ];
 
-            <div className="flex items-center gap-4 text-xs font-mono text-[var(--text-secondary)]">
-              <div className="flex items-center gap-1.5">
-                <Clock size={13} className="text-[var(--text-dim)]" />
-                <span suppressHydrationWarning>{new Date(request.timestamp).toLocaleString()}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[var(--text-dim)]">Latency:</span>
-                <span className="text-[var(--text-primary)]">{request.latency_ms}ms</span>
-              </div>
-            </div>
+  return (
+    <main className="flex-1 flex flex-col overflow-hidden bg-[var(--canvas-bg)]">
+      <div className="px-5 py-3 border-b border-[var(--border-normal)] bg-[var(--card-panel)] shrink-0">
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-[11px] shrink-0" style={{ color: methodColor(request.method) }}>
+              {request.method}
+            </span>
+            <span className="text-[13px] text-[var(--text-primary)] truncate" title={request.path}>
+              {request.path}
+              {request.query && <span className="text-[var(--text-dim)]">?{request.query}</span>}
+            </span>
+            <button
+              onClick={copyUrl}
+              className="p-0.5 text-[var(--text-dim)] hover:text-[var(--text-primary)] cursor-pointer transition-colors shrink-0"
+            >
+              {copiedUrl ? <Check size={12} className="text-[var(--status-success)]" /> : <Copy size={12} />}
+            </button>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
-            {getStatusBadge(request.status_code, request.status_text)}
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[11px] tabular-nums" style={{ color: statusColor(request.status_code) }}>
+              {request.status_code} {request.status_text}
+            </span>
 
             <button
               onClick={() => onReplay(request.id)}
               disabled={isReplaying}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-mono font-semibold rounded bg-[var(--text-primary)] text-[var(--bg-main)] hover:bg-[#fff] transition-all cursor-pointer disabled:opacity-50 shadow-[0_0_12px_rgba(231,208,200,0.2)]"
+              className="flex items-center gap-1 px-2 py-0.5 text-[10px] rounded border border-[var(--border-normal)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-accent)] transition-all cursor-pointer disabled:opacity-40"
             >
-              <Play size={12} fill="currentColor" />
-              <span>{isReplaying ? 'Replaying...' : 'Replay'}</span>
+              <Play size={10} fill="currentColor" />
+              <span>{isReplaying ? 'replaying' : 'replay'}</span>
             </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] -mb-6 pt-2">
-          {(['payload', 'headers', 'response', 'raw'] as TabType[]).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-3 py-2 text-xs font-mono capitalize transition-all border-b-2 cursor-pointer ${
-                activeTab === tab
-                  ? 'border-[var(--border-accent)] text-[var(--text-primary)] font-semibold'
-                  : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
-            >
-              {tab === 'payload' ? 'Request Body' : tab === 'response' ? 'Response Body' : tab}
-            </button>
-          ))}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 text-[10px] text-[var(--text-dim)]">
+            <Clock size={10} />
+            <span suppressHydrationWarning>{new Date(request.timestamp).toLocaleString()}</span>
+            <span className="ml-2">{request.latency_ms}ms</span>
+          </div>
+
+          <div className="flex items-center gap-0">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`px-2.5 py-0.5 text-[10px] rounded transition-all cursor-pointer ${
+                  activeTab === tab.key
+                    ? 'bg-[var(--card-hover)] text-[var(--text-primary)]'
+                    : 'text-[var(--text-dim)] hover:text-[var(--text-secondary)]'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="p-6 flex-1 space-y-6">
+      <div className="flex-1 overflow-y-auto p-5">
         {activeTab === 'payload' && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-wider font-semibold">
-                Request Payload
-              </h3>
-            </div>
+          <div className="space-y-2">
+            <h3 className="text-[10px] text-[var(--text-dim)] uppercase tracking-wider">request payload</h3>
             <JsonViewer data={request.request_body} />
           </div>
         )}
 
         {activeTab === 'headers' && (
-          <div className="space-y-6">
-            <div className="space-y-2.5">
-              <h3 className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-wider font-semibold">
-                Request Headers
-              </h3>
-              {formatHeadersTable(request.request_headers)}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h3 className="text-[10px] text-[var(--text-dim)] uppercase tracking-wider">request headers</h3>
+              {formatHeaders(request.request_headers)}
             </div>
-
-            <div className="space-y-2.5">
-              <h3 className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-wider font-semibold">
-                Response Headers
-              </h3>
-              {formatHeadersTable(request.response_headers)}
+            <div className="space-y-2">
+              <h3 className="text-[10px] text-[var(--text-dim)] uppercase tracking-wider">response headers</h3>
+              {formatHeaders(request.response_headers)}
             </div>
           </div>
         )}
 
         {activeTab === 'response' && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-wider font-semibold">
-                Response Payload
-              </h3>
-            </div>
+          <div className="space-y-2">
+            <h3 className="text-[10px] text-[var(--text-dim)] uppercase tracking-wider">response payload</h3>
             <JsonViewer data={request.response_body} />
           </div>
         )}
 
         {activeTab === 'raw' && (
-          <div className="space-y-3">
-            <h3 className="text-xs font-mono text-[var(--text-secondary)] uppercase tracking-wider font-semibold">
-              Raw HTTP Request
-            </h3>
-            <div className="p-4 rounded-lg border border-[var(--border-normal)] bg-[var(--card-alt)] font-mono text-xs text-[var(--text-primary)] overflow-x-auto whitespace-pre leading-relaxed select-text">
-              {rawHttpRequest}
+          <div className="space-y-2">
+            <h3 className="text-[10px] text-[var(--text-dim)] uppercase tracking-wider">raw http</h3>
+            <div className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--card-alt)] text-[11px] text-[var(--text-primary)] overflow-x-auto whitespace-pre leading-relaxed select-text">
+              {rawHttp}
             </div>
           </div>
         )}
