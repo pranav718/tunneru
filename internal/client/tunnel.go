@@ -16,12 +16,13 @@ type Tunnel struct {
 	serverAddr  string
 	localPort   int
 	subdomain   string
+	authToken   string
 	inspectAddr string
 	forwarder   *Forwarder
 	inspector   *inspection.Server
 }
 
-func NewTunnel(serverAddr string, localPort int, subdomain string) *Tunnel {
+func NewTunnel(serverAddr string, localPort int, subdomain string, authToken string) *Tunnel {
 	inspectAddr := "127.0.0.1:4040"
 	inspector := inspection.NewServer(inspectAddr, localPort)
 
@@ -29,6 +30,7 @@ func NewTunnel(serverAddr string, localPort int, subdomain string) *Tunnel {
 		serverAddr:  serverAddr,
 		localPort:   localPort,
 		subdomain:   subdomain,
+		authToken:   authToken,
 		inspectAddr: inspectAddr,
 		forwarder:   NewForwarder(localPort),
 		inspector:   inspector,
@@ -52,17 +54,30 @@ func (t *Tunnel) Connect() error {
 	reg := &proto.Message{
 		Type:      proto.TypeRegister,
 		Subdomain: t.subdomain,
+		AuthToken: t.authToken,
 	}
 	if err := proto.Encode(conn, reg); err != nil {
 		return fmt.Errorf("tunnel register send: %w", err)
 	}
 
+	resp, err := proto.Decode(conn)
+	if err != nil {
+		return fmt.Errorf("tunnel register response: %w", err)
+	}
+
+	if resp.Type == proto.TypeError {
+		return fmt.Errorf("server registration rejected: %s", resp.Error)
+	}
+
 	session := mux.Client(conn)
 	defer session.Close()
 
-	tunnelURL := fmt.Sprintf("http://%s.localhost:8080", t.subdomain)
-	if t.subdomain == "" {
-		tunnelURL = "http://localhost:8080"
+	tunnelURL := resp.URL
+	if tunnelURL == "" {
+		tunnelURL = fmt.Sprintf("http://%s.localhost:8080", resp.Subdomain)
+		if resp.Subdomain == "" {
+			tunnelURL = "http://localhost:8080"
+		}
 	}
 
 	var program *tea.Program
