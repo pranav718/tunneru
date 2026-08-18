@@ -19,6 +19,7 @@ type Message struct {
 	Type      string `json:"type"`
 	Subdomain string `json:"subdomain,omitempty"`
 	URL       string `json:"url,omitempty"`
+	AuthToken string `json:"auth_token,omitempty"`
 	Error     string `json:"error,omitempty"`
 }
 
