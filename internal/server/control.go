@@ -15,13 +15,15 @@ type ControlServer struct { //manages client tunnel connections over tcp
 	addr     string
 	domain   string
 	registry *Registry
+	auth     *AuthManager
 }
 
-func NewControlServer(addr string, domain string) *ControlServer {
+func NewControlServer(addr string, domain string, auth *AuthManager) *ControlServer {
 	return &ControlServer{
 		addr:     addr,
 		domain:   domain,
 		registry: NewRegistry(domain),
+		auth:     auth,
 	}
 }
 
@@ -108,10 +110,21 @@ func (s *ControlServer) handleClient(conn net.Conn) {
 		return
 	}
 
+	subdomain, authErr := s.auth.Validate(msg.AuthToken, msg.Subdomain)
+	if authErr != nil {
+		log.Printf("auth rejected for %s: %v", remoteAddr, authErr)
+		errMsg := &proto.Message{
+			Type:  proto.TypeError,
+			Error: authErr.Error(),
+		}
+		_ = proto.Encode(conn, errMsg)
+		return
+	}
+
 	session := mux.Server(conn)
 	defer session.Close()
 
-	info, regErr := s.registry.Register(msg.Subdomain, conn, session)
+	info, regErr := s.registry.Register(subdomain, conn, session)
 	if regErr != nil {
 		errMsg := &proto.Message{Type: proto.TypeError, Error: regErr.Error()}
 		log.Printf("register rejected for %s: %v", remoteAddr, regErr)
@@ -124,7 +137,7 @@ func (s *ControlServer) handleClient(conn net.Conn) {
 		Subdomain: info.Subdomain,
 		URL:       info.URL,
 	}
-	_ = resp
+	_ = proto.Encode(conn, resp)
 
 	<-session.AcceptStreamChan() 
 }
