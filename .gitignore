@@ -45,3 +45,5 @@ dist/
 
 # Debug
 __debug_bin*
+
+bin/
