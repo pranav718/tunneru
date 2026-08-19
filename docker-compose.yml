@@ -1,0 +1,20 @@
+services:
+  tunneru:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tunneru-server:latest
+    container_name: tunneru-server
+    restart: unless-stopped
+    ports:
+      - "7001:7001"
+      - "8080:8080"
+      - "7002:7002"
+    environment:
+      - DOMAIN=${TUNNERU_DOMAIN:-tunnel.knightkun.codes}
+      - AUTH_TOKENS=${TUNNERU_AUTH_TOKENS:-}
+    command:
+      - "--domain=${TUNNERU_DOMAIN:-tunnel.knightkun.codes}"
+      - "--control-addr=:7001"
+      - "--proxy-addr=:8080"
+      - "--auth-tokens=${TUNNERU_AUTH_TOKENS:-}"
