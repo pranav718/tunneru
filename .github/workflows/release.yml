@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: darwin
+            arch: arm64
+          - os: darwin
+            arch: amd64
+          - os: linux
+            arch: amd64
+          - os: linux
+            arch: arm64
+          - os: windows
+            arch: amd64
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Build client and server
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+          CGO_ENABLED: 0
+        run: |
+          EXT=""
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            EXT=".exe"
+          fi
+
+          mkdir -p dist
+          go build -ldflags="-s -w" -o dist/tunneru${EXT} ./cmd/client
+          go build -ldflags="-s -w" -o dist/tunneru-server${EXT} ./cmd/server
+
+          ARCHIVE_NAME="tunneru_${{ matrix.os }}_${{ matrix.arch }}"
+          cd dist
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            zip "${ARCHIVE_NAME}.zip" tunneru.exe tunneru-server.exe
+          else
+            tar -czf "${ARCHIVE_NAME}.tar.gz" tunneru tunneru-server
+          fi
+          cd ..
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.os }}-${{ matrix.arch }}
+          path: dist/*.tar.gz dist/*.zip
+
+  publish-release:
+    needs: build-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all built artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+          merge-multiple: true
+
+      - name: Generate Checksums
+        run: |
+          cd release-artifacts
+          sha256sum * > checksums.txt
+          cd ..
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release-artifacts/*
+          generate_release_notes: true
