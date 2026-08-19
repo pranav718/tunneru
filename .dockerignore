@@ -1,0 +1,8 @@
+.git
+.gitignore
+.DS_Store
+web/node_modules
+web/.next
+client
+server
+*.log
