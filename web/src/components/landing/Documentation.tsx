@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Copy, Check, Terminal, Key, Activity, Server, Sliders } from 'lucide-react';
 import { DecodeText } from './DecodeText';
+import { SpotlightCard } from './SpotlightCard';
 
 interface CodeBlockProps {
   code: string;
@@ -110,7 +111,7 @@ export const Documentation: React.FC = () => {
           })}
         </div>
 
-        <div className="max-w-4xl mx-auto rounded-2xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-6 md:p-10">
+        <SpotlightCard className="max-w-4xl mx-auto rounded-2xl">
           {activeTab === 'quickstart' && (
             <div className="space-y-8">
               <div>
@@ -347,7 +348,7 @@ export const Documentation: React.FC = () => {
               </div>
             </div>
           )}
-        </div>
+        </SpotlightCard>
       </div>
     </section>
   );

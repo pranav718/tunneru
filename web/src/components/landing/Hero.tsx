@@ -13,10 +13,6 @@ export const Hero: React.FC = () => {
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 md:py-32">
         <div className="max-w-lg">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-[var(--border-normal)] bg-[var(--card-alt)]/80 backdrop-blur-sm mb-6">
-            <span className="text-[11px] text-[var(--text-dim)] font-mono">v0.1.0 self-hostable tunnel</span>
-          </div>
-
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.15] text-[var(--text-primary)]">
             your localhost,
             <br />

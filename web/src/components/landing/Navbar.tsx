@@ -41,9 +41,6 @@ export const Navbar: React.FC = () => {
             <span className="text-[15px] font-semibold text-[var(--text-primary)] tracking-tight">
               tunneru
             </span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded border border-[var(--border-normal)] text-[var(--text-dim)]">
-              v0.1.0
-            </span>
           </Link>
 
           <div className="hidden md:flex items-center gap-6">

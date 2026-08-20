@@ -3,6 +3,7 @@
 import React from 'react';
 import { Terminal, RotateCcw, Key, ShieldCheck, Cpu } from 'lucide-react';
 import { DecodeText } from './DecodeText';
+import { SpotlightCard } from './SpotlightCard';
 
 export const FeatureGrid: React.FC = () => {
   return (
@@ -21,7 +22,7 @@ export const FeatureGrid: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="md:col-span-2 rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-7 flex flex-col justify-between hover:border-[var(--border-accent)] transition-all duration-200 group">
+          <SpotlightCard className="md:col-span-2">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--teal)]">
@@ -55,9 +56,9 @@ export const FeatureGrid: React.FC = () => {
                 <div className="text-[10px] text-[var(--text-dim)]">fast-path parsing</div>
               </div>
             </div>
-          </div>
+          </SpotlightCard>
 
-          <div className="rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-7 flex flex-col justify-between hover:border-[var(--border-accent)] transition-all duration-200 group">
+          <SpotlightCard>
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--blush)]">
@@ -84,9 +85,9 @@ export const FeatureGrid: React.FC = () => {
                 </span>
               </div>
             </div>
-          </div>
+          </SpotlightCard>
 
-          <div className="rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-7 flex flex-col justify-between hover:border-[var(--border-accent)] transition-all duration-200 group">
+          <SpotlightCard>
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--status-warning)]">
@@ -109,9 +110,9 @@ export const FeatureGrid: React.FC = () => {
               <span>terminal: live tui</span>
               <span>web: localhost:4040</span>
             </div>
-          </div>
+          </SpotlightCard>
 
-          <div className="rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-7 flex flex-col justify-between hover:border-[var(--border-accent)] transition-all duration-200 group">
+          <SpotlightCard>
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--status-success)]">
@@ -133,9 +134,9 @@ export const FeatureGrid: React.FC = () => {
             <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] font-mono text-[10px] text-[var(--text-dim)]">
               <span className="text-[var(--text-secondary)]">$ tunneru 3000 -s myapp -t token</span>
             </div>
-          </div>
+          </SpotlightCard>
 
-          <div className="rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-7 flex flex-col justify-between hover:border-[var(--border-accent)] transition-all duration-200 group">
+          <SpotlightCard>
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--teal)]">
@@ -158,7 +159,7 @@ export const FeatureGrid: React.FC = () => {
               <span>open source</span>
               <span>mit licensed</span>
             </div>
-          </div>
+          </SpotlightCard>
         </div>
       </div>
     </section>
