@@ -1,135 +1,77 @@
-'use client';
+import { Navbar } from '@/components/landing/Navbar';
+import { Footer } from '@/components/landing/Footer';
 
-import React, { useEffect, useState, useRef } from 'react';
-import { TechnicalBackground } from '@/components/TechnicalBackground';
-import { Header } from '@/components/Header';
-import { RequestList } from '@/components/RequestList';
-import { RequestDetail } from '@/components/RequestDetail';
-import { RequestRecord, MethodFilter } from '@/types';
-
-export default function DashboardPage() {
-  const [requests, setRequests] = useState<RequestRecord[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [connected, setConnected] = useState<boolean>(false);
-  const [search, setSearch] = useState<string>('');
-  const [methodFilter, setMethodFilter] = useState<MethodFilter>('ALL');
-  const [isReplaying, setIsReplaying] = useState<boolean>(false);
-  const wsRef = useRef<WebSocket | null>(null);
-
-  const fetchRequests = async () => {
-    try {
-      const res = await fetch('http://localhost:4040/api/requests');
-      if (res.ok) {
-        const data: RequestRecord[] = await res.json();
-        setRequests(data || []);
-        if (data && data.length > 0 && !selectedId) {
-          setSelectedId(data[0].id);
-        }
-      }
-    } catch {
-    }
-  };
-
-  useEffect(() => {
-    fetchRequests();
-
-    let reconnectTimer: NodeJS.Timeout;
-
-    const connectWebSocket = () => {
-      const socket = new WebSocket('ws://localhost:4040/ws');
-      wsRef.current = socket;
-
-      socket.onopen = () => {
-        setConnected(true);
-      };
-
-      socket.onmessage = (event) => {
-        try {
-          const record: RequestRecord = JSON.parse(event.data);
-          setRequests((prev) => {
-            const updated = [record, ...prev.filter((r) => r.id !== record.id)];
-            return updated;
-          });
-          setSelectedId((curr) => curr || record.id);
-        } catch {
-        }
-      };
-
-      socket.onclose = () => {
-        setConnected(false);
-        reconnectTimer = setTimeout(connectWebSocket, 2000);
-      };
-
-      socket.onerror = () => {
-        socket.close();
-      };
-    };
-
-    connectWebSocket();
-
-    return () => {
-      clearTimeout(reconnectTimer);
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, []);
-
-  const handleClear = async () => {
-    try {
-      await fetch('http://localhost:4040/api/requests', { method: 'DELETE' });
-      setRequests([]);
-      setSelectedId(null);
-    } catch (err) {
-      console.error('clear failed:', err);
-    }
-  };
-
-  const handleReplay = async (id: string) => {
-    setIsReplaying(true);
-    try {
-      const res = await fetch(`http://localhost:4040/api/requests/${id}/replay`, {
-        method: 'POST',
-      });
-      if (res.ok) {
-        const newRecord: RequestRecord = await res.json();
-        setRequests((prev) => [newRecord, ...prev]);
-        setSelectedId(newRecord.id);
-      }
-    } catch (err) {
-      console.error('replay failed:', err);
-    } finally {
-      setIsReplaying(false);
-    }
-  };
-
-  const selectedRequest = requests.find((r) => r.id === selectedId) || null;
-
+export default function LandingPage() {
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-[var(--bg-main)]">
-      <TechnicalBackground />
+    <div className="min-h-screen bg-[var(--bg-main)]">
+      <Navbar />
 
-      <div className="relative z-10 w-full h-full xl:w-[1400px] xl:h-[92vh] xl:rounded-lg flex flex-col border border-[var(--border-normal)] bg-[var(--canvas-bg)] overflow-hidden xl:shadow-[0_24px_80px_rgba(0,0,0,0.5)]">
-        <Header connected={connected} requests={requests} onClear={handleClear} />
+      <main>
+        <section id="hero" className="pt-14">
+          <div className="max-w-6xl mx-auto px-6 py-24 md:py-32">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.15] text-[var(--text-primary)]">
+                  your localhost,
+                  <br />
+                  <span className="text-[var(--teal)]">on the public internet.</span>
+                </h1>
+                <p className="mt-5 text-[15px] md:text-[16px] leading-relaxed text-[var(--text-secondary)] max-w-lg">
+                  zero-dependency tunneling with a custom 9-byte binary multiplexer,
+                  interactive terminal tui, and instant request replay.
+                  fast, private, self-hosted.
+                </p>
+                <div className="mt-8 flex flex-col sm:flex-row items-start gap-4">
+                  <div className="group flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[var(--border-normal)] bg-[var(--card-panel)] text-[13px] text-[var(--text-secondary)] select-all cursor-text hover:border-[var(--border-accent)] transition-colors duration-150">
+                    <span className="text-[var(--text-dim)]">$</span>
+                    <span>curl -fsSL https://tunneru.dev/install.sh | sh</span>
+                  </div>
+                </div>
+              </div>
 
-        <div className="flex flex-1 overflow-hidden">
-          <RequestList
-            requests={requests}
-            selectedId={selectedId}
-            onSelect={(id) => setSelectedId(id)}
-            search={search}
-            onSearchChange={setSearch}
-            methodFilter={methodFilter}
-            onMethodFilterChange={setMethodFilter}
-          />
+              <div className="hidden lg:flex items-center justify-center">
+                <div className="w-full aspect-square max-w-[480px] rounded-xl border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--text-dim)] text-[13px]">
+                  3d particle tunnel - phase 2
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-          <RequestDetail
-            request={selectedRequest}
-            onReplay={handleReplay}
-            isReplaying={isReplaying}
-          />
-        </div>
-      </div>
+        <section id="terminal-preview" className="border-t border-[var(--border-subtle)]">
+          <div className="max-w-6xl mx-auto px-6 py-20">
+            <div className="rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-8 flex items-center justify-center min-h-[320px] text-[var(--text-dim)] text-[13px]">
+              terminal preview — phase 3
+            </div>
+          </div>
+        </section>
+
+        <section id="how-it-works" className="border-t border-[var(--border-subtle)]">
+          <div className="max-w-6xl mx-auto px-6 py-20">
+            <div className="text-center text-[var(--text-dim)] text-[13px]">
+              how it works — phase 4
+            </div>
+          </div>
+        </section>
+
+        <section id="features" className="border-t border-[var(--border-subtle)]">
+          <div className="max-w-6xl mx-auto px-6 py-20">
+            <div className="text-center text-[var(--text-dim)] text-[13px]">
+              feature bento grid — phase 4
+            </div>
+          </div>
+        </section>
+
+        <section id="docs" className="border-t border-[var(--border-subtle)]">
+          <div className="max-w-6xl mx-auto px-6 py-20">
+            <div className="text-center text-[var(--text-dim)] text-[13px]">
+              documentation tabs — phase 5
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   );
 }
