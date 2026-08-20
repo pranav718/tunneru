@@ -19,7 +19,7 @@ export default function LandingPage() {
         <section id="docs" className="border-t border-[var(--border-subtle)]">
           <div className="max-w-6xl mx-auto px-6 py-20">
             <div className="text-center text-[var(--text-dim)] text-[13px]">
-              documentation tabs — phase 5
+              documentation and cli reference
             </div>
           </div>
         </section>
