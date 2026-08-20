@@ -19,13 +19,10 @@ export const Footer: React.FC = () => {
           </span>
         </div>
 
-        <div className="flex items-center gap-6 text-[12px] text-[var(--text-dim)]">
+        <div className="flex items-center gap-5 text-[12px] text-[var(--text-dim)] font-mono">
           <span>MIT license</span>
-          <span className="text-[var(--border-normal)]">·</span>
           <span>Go 1.24</span>
-          <span className="text-[var(--border-normal)]">·</span>
           <span>next.js 16</span>
-          <span className="text-[var(--border-normal)]">·</span>
           <a
             href="https://github.com/pranav718/tunneru"
             target="_blank"

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
+import { DecodeText } from './DecodeText';
 
 interface SimulatedRequest {
   id: string;
@@ -131,7 +132,7 @@ export const TerminalPreview: React.FC = () => {
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-10">
           <span className="text-[11px] text-[var(--teal)] uppercase tracking-wider font-mono">
-            live terminal inspection
+            <DecodeText text="live terminal inspection" />
           </span>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-2">
             real-time telemetry without leaving your shell
@@ -186,8 +187,7 @@ export const TerminalPreview: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 self-start sm:self-center px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[#141012]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--status-success)] animate-pulse" />
+              <div className="flex items-center self-start sm:self-center px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[#141012]">
                 <span className="text-[10px] text-[var(--status-success)] font-medium">connected</span>
               </div>
             </div>

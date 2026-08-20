@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Layers, Terminal, RotateCcw, Key, Server, ShieldCheck, Cpu } from 'lucide-react';
+import { DecodeText } from './DecodeText';
 
 interface FeatureCard {
   icon: React.ReactNode;
@@ -19,7 +20,7 @@ export const FeatureGrid: React.FC = () => {
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="text-[11px] text-[var(--teal)] uppercase tracking-wider font-mono">
-            engineering highlights
+            <DecodeText text="engineering highlights" />
           </span>
           <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-[var(--text-primary)] mt-2">
             built for developers who value speed & privacy

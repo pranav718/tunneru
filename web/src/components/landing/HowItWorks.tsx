@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Globe, Server, Terminal, ArrowRight, Zap } from 'lucide-react';
+import { DecodeText } from './DecodeText';
 
 interface Step {
   number: string;
@@ -65,7 +66,7 @@ export const HowItWorks: React.FC = () => {
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="text-[11px] text-[var(--teal)] uppercase tracking-wider font-mono">
-            architecture & data flow
+            <DecodeText text="architecture & data flow" />
           </span>
           <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-[var(--text-primary)] mt-2">
             how tunneru routes traffic in microseconds
@@ -136,7 +137,7 @@ export const HowItWorks: React.FC = () => {
               <div className="text-[var(--text-dim)] text-[10px] mb-1">offset 0x00 (1 byte)</div>
               <div className="text-[var(--teal)] font-bold">frame type</div>
               <div className="text-[10px] text-[var(--text-secondary)] mt-1">
-                0x01 data · 0x02 ping · 0x04 close
+                0x01 data / 0x02 ping / 0x04 close
               </div>
             </div>
 
@@ -144,7 +145,7 @@ export const HowItWorks: React.FC = () => {
               <div className="text-[var(--text-dim)] text-[10px] mb-1">offset 0x01 (4 bytes)</div>
               <div className="text-[var(--blush)] font-bold">stream id (uint32)</div>
               <div className="text-[10px] text-[var(--text-secondary)] mt-1">
-                odd: server · even: client
+                odd: server, even: client
               </div>
             </div>
 

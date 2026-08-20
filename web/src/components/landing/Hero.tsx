@@ -10,9 +10,8 @@ export const Hero: React.FC = () => {
       <div className="max-w-6xl mx-auto px-6 py-24 md:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--border-normal)] bg-[var(--card-alt)] mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--status-success)] animate-pulse" />
-              <span className="text-[11px] text-[var(--text-dim)]">v0.1.0 — self-hostable tunnel</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-[var(--border-normal)] bg-[var(--card-alt)] mb-6">
+              <span className="text-[11px] text-[var(--text-dim)] font-mono">v0.1.0 · self-hostable tunnel</span>
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.15] text-[var(--text-primary)]">
@@ -31,19 +30,10 @@ export const Hero: React.FC = () => {
               <CopyPill command="curl -fsSL https://tunneru.dev/install.sh | sh" />
             </div>
 
-            <div className="mt-8 flex items-center gap-5 text-[11px] text-[var(--text-dim)]">
-              <span className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-[var(--teal)]" />
-                zero config
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-[var(--blush)]" />
-                no signup
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-[var(--status-success)]" />
-                100% private
-              </span>
+            <div className="mt-8 flex items-center gap-6 text-[12px] text-[var(--text-dim)] font-mono">
+              <span>zero config</span>
+              <span>no signup</span>
+              <span>100% private</span>
             </div>
           </div>
 
