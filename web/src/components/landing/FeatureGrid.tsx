@@ -1,18 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Layers, Terminal, RotateCcw, Key, Server, ShieldCheck, Cpu } from 'lucide-react';
+import { Terminal, RotateCcw, Key, ShieldCheck, Cpu } from 'lucide-react';
 import { DecodeText } from './DecodeText';
-
-interface FeatureCard {
-  icon: React.ReactNode;
-  tag: string;
-  title: string;
-  description: string;
-  metric?: string;
-  codeSnippet?: string;
-  colSpan?: string;
-}
 
 export const FeatureGrid: React.FC = () => {
   return (

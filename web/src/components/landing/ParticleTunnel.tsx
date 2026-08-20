@@ -4,7 +4,6 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
 const PARTICLE_COUNT = 8500;
-const TUNNEL_LENGTH = 1200;
 const TUNNEL_RADIUS = 160;
 const CAMERA_Z = 180;
 const FAR_Z = -1000;

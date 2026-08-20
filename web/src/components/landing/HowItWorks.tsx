@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Globe, Server, Terminal, ArrowRight, Zap } from 'lucide-react';
+import { Zap } from 'lucide-react';
 import { DecodeText } from './DecodeText';
 
 interface Step {

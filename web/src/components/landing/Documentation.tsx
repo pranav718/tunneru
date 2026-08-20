@@ -45,6 +45,27 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'bash' }) => {
 export const Documentation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'quickstart' | 'auth' | 'inspect' | 'selfhost' | 'cli'>('quickstart');
 
+  React.useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.toLowerCase().replace('#', '');
+      if (hash === 'self-host' || hash === 'selfhost') {
+        setActiveTab('selfhost');
+      } else if (hash === 'auth' || hash === 'authtoken') {
+        setActiveTab('auth');
+      } else if (hash === 'inspect' || hash === 'inspector') {
+        setActiveTab('inspect');
+      } else if (hash === 'cli' || hash === 'flags') {
+        setActiveTab('cli');
+      } else if (hash === 'quickstart') {
+        setActiveTab('quickstart');
+      }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
   const tabs = [
     { id: 'quickstart', label: 'quickstart', icon: Terminal },
     { id: 'auth', label: 'auth & tokens', icon: Key },

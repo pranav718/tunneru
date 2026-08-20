@@ -16,48 +16,57 @@ export default function InspectorPage() {
   const [isReplaying, setIsReplaying] = useState<boolean>(false);
   const wsRef = useRef<WebSocket | null>(null);
 
-  const fetchRequests = async () => {
-    try {
-      const res = await fetch('http://localhost:4040/api/requests');
-      if (res.ok) {
-        const data: RequestRecord[] = await res.json();
-        setRequests(data || []);
-        if (data && data.length > 0 && !selectedId) {
-          setSelectedId(data[0].id);
-        }
-      }
-    } catch {
-    }
-  };
-
   useEffect(() => {
-    fetchRequests();
-
+    let ignore = false;
     let reconnectTimer: NodeJS.Timeout;
+
+    const loadInitialRequests = async () => {
+      try {
+        const res = await fetch('http://localhost:4040/api/requests');
+        if (res.ok && !ignore) {
+          const data: RequestRecord[] = await res.json();
+          setRequests(data || []);
+          if (data && data.length > 0) {
+            setSelectedId((curr) => curr || data[0].id);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    void loadInitialRequests();
 
     const connectWebSocket = () => {
       const socket = new WebSocket('ws://localhost:4040/ws');
       wsRef.current = socket;
 
       socket.onopen = () => {
-        setConnected(true);
+        if (!ignore) {
+          setConnected(true);
+        }
       };
 
       socket.onmessage = (event) => {
         try {
           const record: RequestRecord = JSON.parse(event.data);
-          setRequests((prev) => {
-            const updated = [record, ...prev.filter((r) => r.id !== record.id)];
-            return updated;
-          });
-          setSelectedId((curr) => curr || record.id);
+          if (!ignore) {
+            setRequests((prev) => {
+              const updated = [record, ...prev.filter((r) => r.id !== record.id)];
+              return updated;
+            });
+            setSelectedId((curr) => curr || record.id);
+          }
         } catch {
+          // ignore
         }
       };
 
       socket.onclose = () => {
-        setConnected(false);
-        reconnectTimer = setTimeout(connectWebSocket, 2000);
+        if (!ignore) {
+          setConnected(false);
+          reconnectTimer = setTimeout(connectWebSocket, 2000);
+        }
       };
 
       socket.onerror = () => {
@@ -68,6 +77,7 @@ export default function InspectorPage() {
     connectWebSocket();
 
     return () => {
+      ignore = true;
       clearTimeout(reconnectTimer);
       if (wsRef.current) {
         wsRef.current.close();

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 interface DecodeTextProps {
   text: string;
@@ -16,11 +16,10 @@ export const DecodeText: React.FC<DecodeTextProps> = ({
   triggerOnHover = true,
 }) => {
   const [displayText, setDisplayText] = useState(text);
-  const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLSpanElement>(null);
   const isDecodingRef = useRef(false);
 
-  const triggerDecode = () => {
+  const triggerDecode = useCallback(() => {
     if (isDecodingRef.current) return;
     isDecodingRef.current = true;
 
@@ -49,7 +48,7 @@ export const DecodeText: React.FC<DecodeTextProps> = ({
 
       iteration += 1 / 3;
     }, 28);
-  };
+  }, [text]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -68,10 +67,9 @@ export const DecodeText: React.FC<DecodeTextProps> = ({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [text]);
+  }, [triggerDecode]);
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
     if (triggerOnHover) {
       triggerDecode();
     }
@@ -81,7 +79,6 @@ export const DecodeText: React.FC<DecodeTextProps> = ({
     <span
       ref={containerRef}
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={() => setIsHovered(false)}
       className={`font-mono inline-block cursor-default select-none ${className}`}
     >
       {displayText}
