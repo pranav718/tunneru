@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/landing/Navbar';
 import { Footer } from '@/components/landing/Footer';
 import { Hero } from '@/components/landing/Hero';
+import { TextMarquee } from '@/components/landing/TextMarquee';
 import { TerminalPreview } from '@/components/landing/TerminalPreview';
 import { HowItWorks } from '@/components/landing/HowItWorks';
 import { FeatureGrid } from '@/components/landing/FeatureGrid';
@@ -13,6 +14,7 @@ export default function LandingPage() {
 
       <main>
         <Hero />
+        <TextMarquee />
         <TerminalPreview />
         <HowItWorks />
         <FeatureGrid />
