@@ -49,9 +49,10 @@ export const Navbar: React.FC = () => {
             <a
               key={link.href}
               href={link.href}
-              className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150 font-mono"
+              className="group relative text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-200 font-mono py-1 cursor-pointer"
             >
-              {link.label}
+              <span>{link.label}</span>
+              <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--teal)] transition-all duration-300 ease-out group-hover:w-full" />
             </a>
           ))}
         </div>
@@ -90,9 +91,10 @@ export const Navbar: React.FC = () => {
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="text-[14px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] py-1"
+              className="group relative text-[14px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] py-1 w-fit"
             >
-              {link.label}
+              <span>{link.label}</span>
+              <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--teal)] transition-all duration-300 ease-out group-hover:w-full" />
             </a>
           ))}
           <div className="flex items-center gap-3 pt-2 border-t border-[var(--border-subtle)]">

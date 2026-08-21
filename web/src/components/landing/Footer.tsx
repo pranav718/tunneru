@@ -27,10 +27,13 @@ export const Footer: React.FC = () => {
             href="https://github.com/pranav718/tunneru"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 hover:text-[var(--text-primary)] transition-colors duration-150"
+            className="group relative flex items-center gap-1 hover:text-[var(--text-primary)] transition-colors duration-200"
           >
             <GithubIcon size={12} />
-            source
+            <span className="relative">
+              <span>source</span>
+              <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[var(--teal)] transition-all duration-300 ease-out group-hover:w-full" />
+            </span>
           </a>
         </div>
       </div>
