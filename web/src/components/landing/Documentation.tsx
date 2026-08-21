@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Copy, Check, Terminal, Key, Activity, Server, Sliders } from 'lucide-react';
-import { SectionBadge } from './SectionBadge';
+import { SlideUpText } from './SlideUpText';
 import { SpotlightCard } from './SpotlightCard';
 
 interface CodeBlockProps {
@@ -79,12 +79,14 @@ export const Documentation: React.FC = () => {
     <section id="docs" className="border-t border-[var(--border-subtle)] py-24 bg-[var(--bg-main)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <SectionBadge text="documentation" />
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-4">
+          <span className="text-[13px] font-mono text-[var(--teal)] tracking-wider">
             developer guide & reference
+          </span>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-3">
+            <SlideUpText text="everything you need to get started" />
           </h2>
           <p className="text-[14px] text-[var(--text-secondary)] mt-3 max-w-xl mx-auto">
-            everything you need to install the client, manage tokens, inspect live traffic, or run your own server.
+            install the client, manage tokens, inspect live traffic, or run your own server.
           </p>
         </div>
 

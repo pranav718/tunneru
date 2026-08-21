@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
-import { SectionBadge } from './SectionBadge';
 import { SlideUpText } from './SlideUpText';
 
 interface SimulatedRequest {
@@ -132,8 +131,10 @@ export const TerminalPreview: React.FC = () => {
     <section id="terminal-preview" className="border-t border-[var(--border-subtle)] py-20">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-10">
-          <SectionBadge text="live terminal inspection" />
-          <h2 className="text-xl md:text-2xl font-bold tracking-tight text-[var(--text-primary)] mt-4">
+          <span className="text-[13px] font-mono text-[var(--teal)] tracking-wider">
+            live terminal inspection
+          </span>
+          <h2 className="text-xl md:text-2xl font-bold tracking-tight text-[var(--text-primary)] mt-3">
             <SlideUpText text="real-time telemetry without leaving your shell" />
           </h2>
           <p className="text-[14px] text-[var(--text-secondary)] mt-2 max-w-lg mx-auto">

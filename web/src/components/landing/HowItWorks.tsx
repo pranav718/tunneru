@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { SectionBadge } from './SectionBadge';
+import { SlideUpText } from './SlideUpText';
 
 interface Step {
   number: string;
@@ -64,9 +64,11 @@ export const HowItWorks: React.FC = () => {
     <section id="how-it-works" className="border-t border-[var(--border-subtle)] py-24 bg-[var(--bg-main)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <SectionBadge text="architecture & data flow" />
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-4">
-            how tunneru routes traffic in microseconds
+          <span className="text-[13px] font-mono text-[var(--teal)] tracking-wider">
+            architecture & data flow
+          </span>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-3">
+            <SlideUpText text="how tunneru routes traffic in microseconds" />
           </h2>
           <p className="text-[14px] text-[var(--text-secondary)] mt-3 max-w-xl mx-auto">
             a custom binary multiplexing protocol built from scratch in go for zero latency and minimal cpu overhead.
@@ -91,23 +93,27 @@ export const HowItWorks: React.FC = () => {
                     <span className="text-[11px] font-mono text-[var(--teal)] px-2 py-0.5 rounded border border-[var(--border-subtle)] bg-[var(--card-alt)]">
                       step {step.number}
                     </span>
-                    <span className="text-[10px] text-[var(--text-dim)] font-mono uppercase tracking-wider">
+                    <span className="text-[10px] font-mono text-[var(--text-dim)] uppercase tracking-wider">
                       {step.tag}
                     </span>
                   </div>
 
-                  <h3 className="text-[16px] font-semibold text-[var(--text-primary)] mb-2">
+                  <h3 className="text-[16px] font-semibold text-[var(--text-primary)] mb-1.5">
                     {step.title}
                   </h3>
 
-                  <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed mb-6">
+                  <div className="mb-3 font-mono text-[11px] text-[var(--teal)]">
+                    {step.badge}
+                  </div>
+
+                  <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
                     {step.description}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-[var(--border-subtle)] space-y-2">
-                  {step.detail.map((d) => (
-                    <div key={d.label} className="flex items-center justify-between text-[11px]">
+                <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] space-y-1.5">
+                  {step.detail.map((d, i) => (
+                    <div key={i} className="flex items-center justify-between text-[11px]">
                       <span className="text-[var(--text-dim)] font-mono">{d.label}</span>
                       <span className="text-[var(--text-primary)] font-mono text-[10px]">{d.value}</span>
                     </div>
@@ -120,12 +126,9 @@ export const HowItWorks: React.FC = () => {
 
         <div className="mt-10 rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-6">
           <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4 mb-4">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--teal)]" />
-              <span className="text-[12px] font-mono text-[var(--text-primary)] font-semibold">
-                wire format: 9-byte multiplexer frame header
-              </span>
-            </div>
+            <span className="text-[12px] font-mono text-[var(--text-primary)] font-semibold">
+              wire format: 9-byte multiplexer frame header
+            </span>
             <span className="text-[10px] font-mono text-[var(--text-dim)]">binary protocol spec</span>
           </div>
 
@@ -140,25 +143,25 @@ export const HowItWorks: React.FC = () => {
 
             <div className="rounded border border-[var(--border-subtle)] bg-[var(--card-alt)] p-3">
               <div className="text-[var(--text-dim)] text-[10px] mb-1">offset 0x01 (4 bytes)</div>
-              <div className="text-[var(--blush)] font-bold">stream id (uint32)</div>
+              <div className="text-[var(--blush)] font-bold">stream id</div>
               <div className="text-[10px] text-[var(--text-secondary)] mt-1">
-                odd: server, even: client
+                uint32 big-endian stream id
               </div>
             </div>
 
             <div className="rounded border border-[var(--border-subtle)] bg-[var(--card-alt)] p-3">
               <div className="text-[var(--text-dim)] text-[10px] mb-1">offset 0x05 (4 bytes)</div>
-              <div className="text-[var(--status-warning)] font-bold">payload length (uint32)</div>
+              <div className="text-[var(--teal)] font-bold">payload length</div>
               <div className="text-[10px] text-[var(--text-secondary)] mt-1">
-                big-endian byte count
+                uint32 big-endian payload size
               </div>
             </div>
 
             <div className="rounded border border-[var(--border-subtle)] bg-[var(--card-alt)] p-3">
-              <div className="text-[var(--text-dim)] text-[10px] mb-1">offset 0x09 (variable)</div>
+              <div className="text-[var(--text-dim)] text-[10px] mb-1">offset 0x09 (n bytes)</div>
               <div className="text-[var(--status-success)] font-bold">payload data</div>
               <div className="text-[10px] text-[var(--text-secondary)] mt-1">
-                raw http stream slice
+                raw chunked http frame bytes
               </div>
             </div>
           </div>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Terminal, RotateCcw, Key, ShieldCheck, Cpu } from 'lucide-react';
-import { SectionBadge } from './SectionBadge';
+import { SlideUpText } from './SlideUpText';
 import { SpotlightCard } from './SpotlightCard';
 
 export const FeatureGrid: React.FC = () => {
@@ -10,9 +10,11 @@ export const FeatureGrid: React.FC = () => {
     <section id="features" className="border-t border-[var(--border-subtle)] py-24 bg-[var(--bg-main)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <SectionBadge text="engineering highlights" />
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-4">
-            built for developers who value speed & privacy
+          <span className="text-[13px] font-mono text-[var(--teal)] tracking-wider">
+            engineering highlights
+          </span>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-3">
+            <SlideUpText text="built for developers who value speed & privacy" />
           </h2>
           <p className="text-[14px] text-[var(--text-secondary)] mt-3 max-w-xl mx-auto">
             every layer engineered from the ground up without third-party cloud lock-in or heavy runtime overhead.
