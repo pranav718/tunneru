@@ -35,25 +35,25 @@ export const Navbar: React.FC = () => {
           : 'bg-transparent border-b border-transparent'
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2.5">
+      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between relative">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2">
             <span className="text-[15px] font-semibold text-[var(--text-primary)] tracking-tight">
               tunneru
             </span>
           </Link>
+        </div>
 
-          <div className="hidden md:flex items-center gap-6">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
+        <div className="hidden md:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150 font-mono"
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
 
         <div className="hidden md:flex items-center gap-3">
