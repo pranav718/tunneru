@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Terminal, RotateCcw, Key, ShieldCheck, Cpu } from 'lucide-react';
-import { DecodeText } from './DecodeText';
+import { SectionBadge } from './SectionBadge';
 import { SpotlightCard } from './SpotlightCard';
 
 export const FeatureGrid: React.FC = () => {
@@ -10,10 +10,8 @@ export const FeatureGrid: React.FC = () => {
     <section id="features" className="border-t border-[var(--border-subtle)] py-24 bg-[var(--bg-main)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="text-[11px] text-[var(--teal)] uppercase tracking-wider font-mono">
-            <DecodeText text="engineering highlights" />
-          </span>
-          <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-[var(--text-primary)] mt-2">
+          <SectionBadge text="engineering highlights" />
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-4">
             built for developers who value speed & privacy
           </h2>
           <p className="text-[14px] text-[var(--text-secondary)] mt-3 max-w-xl mx-auto">

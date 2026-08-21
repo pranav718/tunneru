@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
-import { DecodeText } from './DecodeText';
+import { SectionBadge } from './SectionBadge';
+import { SlideUpText } from './SlideUpText';
 
 interface SimulatedRequest {
   id: string;
@@ -131,11 +132,9 @@ export const TerminalPreview: React.FC = () => {
     <section id="terminal-preview" className="border-t border-[var(--border-subtle)] py-20">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-10">
-          <span className="text-[11px] text-[var(--teal)] uppercase tracking-wider font-mono">
-            <DecodeText text="live terminal inspection" />
-          </span>
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-2">
-            real-time telemetry without leaving your shell
+          <SectionBadge text="live terminal inspection" />
+          <h2 className="text-xl md:text-2xl font-bold tracking-tight text-[var(--text-primary)] mt-4">
+            <SlideUpText text="real-time telemetry without leaving your shell" />
           </h2>
           <p className="text-[14px] text-[var(--text-secondary)] mt-2 max-w-lg mx-auto">
             every webhook and http request streaming through your multiplexed tunnel, right in bubble tea tui.

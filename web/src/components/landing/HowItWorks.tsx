@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DecodeText } from './DecodeText';
+import { SectionBadge } from './SectionBadge';
 
 interface Step {
   number: string;
@@ -64,10 +64,8 @@ export const HowItWorks: React.FC = () => {
     <section id="how-it-works" className="border-t border-[var(--border-subtle)] py-24 bg-[var(--bg-main)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="text-[11px] text-[var(--teal)] uppercase tracking-wider font-mono">
-            <DecodeText text="architecture & data flow" />
-          </span>
-          <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-[var(--text-primary)] mt-2">
+          <SectionBadge text="architecture & data flow" />
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-4">
             how tunneru routes traffic in microseconds
           </h2>
           <p className="text-[14px] text-[var(--text-secondary)] mt-3 max-w-xl mx-auto">

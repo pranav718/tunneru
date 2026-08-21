@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Copy, Check, Terminal, Key, Activity, Server, Sliders } from 'lucide-react';
-import { DecodeText } from './DecodeText';
+import { SectionBadge } from './SectionBadge';
 import { SpotlightCard } from './SpotlightCard';
 
 interface CodeBlockProps {
@@ -79,10 +79,8 @@ export const Documentation: React.FC = () => {
     <section id="docs" className="border-t border-[var(--border-subtle)] py-24 bg-[var(--bg-main)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="text-[11px] text-[var(--teal)] uppercase tracking-wider font-mono">
-            <DecodeText text="documentation" />
-          </span>
-          <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-[var(--text-primary)] mt-2">
+          <SectionBadge text="documentation" />
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)] mt-4">
             developer guide & reference
           </h2>
           <p className="text-[14px] text-[var(--text-secondary)] mt-3 max-w-xl mx-auto">
