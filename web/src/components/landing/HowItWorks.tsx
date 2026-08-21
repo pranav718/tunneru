@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Zap } from 'lucide-react';
 import { DecodeText } from './DecodeText';
 
 interface Step {
@@ -124,7 +123,7 @@ export const HowItWorks: React.FC = () => {
         <div className="mt-10 rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-6">
           <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4 mb-4">
             <div className="flex items-center gap-2">
-              <Zap size={14} className="text-[var(--teal)]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--teal)]" />
               <span className="text-[12px] font-mono text-[var(--text-primary)] font-semibold">
                 wire format: 9-byte multiplexer frame header
               </span>
