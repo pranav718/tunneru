@@ -66,7 +66,7 @@ export const Navbar: React.FC = () => {
               <span>inspector</span>
               <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[var(--teal)] transition-all duration-300 ease-out group-hover:w-full" />
             </span>
-            <ArrowUpRight size={13} className="text-[var(--text-dim)] group-hover:text-[var(--teal)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-[405deg] group-hover:translate-x-0.5" />
+            <ArrowUpRight size={13} className="text-[var(--text-dim)] group-hover:text-[var(--teal)] transition-transform duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-[405deg] group-hover:translate-x-0.5" />
           </Link>
           <a
             href="https://github.com/pranav718/tunneru"
@@ -109,7 +109,7 @@ export const Navbar: React.FC = () => {
                 <span>inspector</span>
                 <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[var(--teal)] transition-all duration-300 ease-out group-hover:w-full" />
               </span>
-              <ArrowUpRight size={13} className="text-[var(--text-dim)] group-hover:text-[var(--teal)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-[405deg] group-hover:translate-x-0.5" />
+              <ArrowUpRight size={13} className="text-[var(--text-dim)] group-hover:text-[var(--teal)] transition-transform duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-[405deg] group-hover:translate-x-0.5" />
             </Link>
             <a
               href="https://github.com/pranav718/tunneru"

@@ -23,7 +23,7 @@ export const InteractiveLink: React.FC<InteractiveLinkProps> = ({
         <span className="lowercase">{label}</span>
         <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--teal)] transition-all duration-300 ease-out group-hover:w-full" />
       </span>
-      <ArrowUpRight size={14} className="text-[var(--text-dim)] group-hover:text-[var(--teal)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-[405deg] group-hover:translate-x-0.5" />
+      <ArrowUpRight size={14} className="text-[var(--text-dim)] group-hover:text-[var(--teal)] transition-transform duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-[405deg] group-hover:translate-x-0.5" />
     </span>
   );
 
