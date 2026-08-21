@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ExternalLink, Menu, X } from 'lucide-react';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
 
 const GithubIcon = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -60,10 +60,13 @@ export const Navbar: React.FC = () => {
         <div className="hidden md:flex items-center gap-3">
           <Link
             href="/inspect"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] text-[var(--text-secondary)] rounded border border-[var(--border-normal)] hover:border-[var(--border-accent)] hover:text-[var(--text-primary)] transition-all duration-150 active:scale-[0.97]"
+            className="group flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-mono text-[var(--text-secondary)] rounded border border-[var(--border-normal)] hover:border-[var(--border-accent)] hover:text-[var(--text-primary)] transition-all duration-200 active:scale-[0.97] cursor-pointer"
           >
-            <ExternalLink size={12} />
-            inspector
+            <span className="relative">
+              <span>inspector</span>
+              <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[var(--teal)] transition-all duration-300 ease-out group-hover:w-full" />
+            </span>
+            <ArrowUpRight size={13} className="text-[var(--text-dim)] group-hover:text-[var(--teal)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-[405deg] group-hover:translate-x-0.5" />
           </Link>
           <a
             href="https://github.com/pranav718/tunneru"
@@ -100,10 +103,13 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-3 pt-2 border-t border-[var(--border-subtle)]">
             <Link
               href="/inspect"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] text-[var(--text-secondary)] rounded border border-[var(--border-normal)]"
+              className="group flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-mono text-[var(--text-secondary)] rounded border border-[var(--border-normal)]"
             >
-              <ExternalLink size={12} />
-              inspector
+              <span className="relative">
+                <span>inspector</span>
+                <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[var(--teal)] transition-all duration-300 ease-out group-hover:w-full" />
+              </span>
+              <ArrowUpRight size={13} className="text-[var(--text-dim)] group-hover:text-[var(--teal)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-[405deg] group-hover:translate-x-0.5" />
             </Link>
             <a
               href="https://github.com/pranav718/tunneru"
