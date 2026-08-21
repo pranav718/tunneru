@@ -3,6 +3,7 @@
 import React from 'react';
 import { ParticleTunnel } from './ParticleTunnel';
 import { CopyPill } from './CopyPill';
+import { InteractiveLink } from './InteractiveLink';
 
 export const Hero: React.FC = () => {
   return (
@@ -25,8 +26,9 @@ export const Hero: React.FC = () => {
             fast, private, self-hosted.
           </p>
 
-          <div className="mt-8 flex flex-col sm:flex-row items-start gap-4">
+          <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-5">
             <CopyPill command="curl -fsSL https://tunneru.dev/install.sh | sh" />
+            <InteractiveLink href="#docs" label="read docs" />
           </div>
 
           <div className="mt-8 flex items-center gap-6 text-[12px] text-[var(--text-dim)] font-mono">
