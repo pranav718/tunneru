@@ -20,12 +20,12 @@ const STEPS: Step[] = [
     number: '01',
     title: 'public ingress & routing',
     tag: 'edge',
-    badge: 'https://myapp.tunneru.dev',
+    badge: 'https://myapp.tunneru.knightkun.codes',
     description:
       'external traffic hits the public edge. the reverse proxy inspects the host header, looks up the active client session in the concurrent registry, and locks a stream.',
     detail: [
       { label: 'protocol', value: 'http/1.1 & https' },
-      { label: 'subdomain', value: 'myapp.tunneru.dev' },
+      { label: 'subdomain', value: 'myapp.tunneru.knightkun.codes' },
       { label: 'lookup', value: '< 1ms registry match' },
     ],
   },

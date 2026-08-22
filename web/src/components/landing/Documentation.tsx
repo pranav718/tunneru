@@ -119,7 +119,7 @@ export const Documentation: React.FC = () => {
                 <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed mb-3">
                   download and install the prebuilt static binary for macos, linux, or windows.
                 </p>
-                <CodeBlock code="curl -fsSL https://tunneru.dev/install.sh | sh" />
+                <CodeBlock code="curl -fsSL https://raw.githubusercontent.com/pranav718/tunneru/main/install.sh | sh" />
               </div>
 
               <div>
@@ -129,7 +129,7 @@ export const Documentation: React.FC = () => {
                 </p>
                 <CodeBlock code="tunneru 3000" />
                 <p className="text-[13px] text-[var(--text-dim)] mt-2 font-mono">
-                  tunneru assigns a random public subdomain (e.g. https://frost-729.tunneru.dev) and starts the live tui.
+                  tunneru assigns a random public subdomain (e.g. https://frost-729.tunneru.knightkun.codes) and starts the live tui.
                 </p>
               </div>
 
@@ -327,7 +327,7 @@ export const Documentation: React.FC = () => {
                       <tr>
                         <td className="py-2.5 px-3 text-[var(--text-primary)]">--domain</td>
                         <td className="py-2.5 px-3">string</td>
-                        <td className="py-2.5 px-3">&quot;tunneru.dev&quot;</td>
+                        <td className="py-2.5 px-3">&quot;tunneru.knightkun.codes&quot;</td>
                         <td className="py-2.5 px-3">base domain for client subdomains</td>
                       </tr>
                       <tr>

@@ -48,7 +48,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.Flags().StringVar(&controlAddr, "control-addr", ":7001", "address for the control server")
 	rootCmd.Flags().StringVar(&proxyAddr, "proxy-addr", ":8080", "address for the public HTTP proxy server")
-	rootCmd.Flags().StringVar(&domain, "domain", "tunneru.dev", "base domain for tunnel URLs")
+	rootCmd.Flags().StringVar(&domain, "domain", "tunneru.knightkun.codes", "base domain for tunnel URLs")
 	rootCmd.Flags().StringVar(&authTokens, "auth-tokens", "", "comma-separated tokens (e.g. token1,token2:reserved_subdomain)")
 	rootCmd.Flags().StringVar(&authFile, "auth-file", "", "path to JSON file mapping tokens to subdomains")
 }

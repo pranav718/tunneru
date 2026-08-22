@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tunneru.dev'),
+  metadataBase: new URL('https://tunneru.knightkun.codes'),
   title: {
     default: 'tunneru | your localhost, on the public internet',
     template: '%s | tunneru',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://tunneru.dev',
+    url: 'https://tunneru.knightkun.codes',
     title: 'tunneru | your localhost, on the public internet',
     description: 'zero-dependency tunneling with a custom 9-byte binary multiplexer, interactive terminal tui, and instant request replay.',
     siteName: 'tunneru',

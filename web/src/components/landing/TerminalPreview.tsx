@@ -175,7 +175,7 @@ export const TerminalPreview: React.FC = () => {
               <div className="space-y-1.5">
                 <div className="flex items-center gap-3">
                   <span className="text-[var(--text-dim)] w-20">tunnel:</span>
-                  <span className="text-[var(--teal)] font-medium">https://myapp.tunneru.dev</span>
+                  <span className="text-[var(--teal)] font-medium">https://myapp.tunneru.knightkun.codes</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-[var(--text-dim)] w-20">forwarding:</span>

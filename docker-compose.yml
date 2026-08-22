@@ -11,10 +11,10 @@ services:
       - "8080:8080"
       - "7002:7002"
     environment:
-      - DOMAIN=${TUNNERU_DOMAIN:-tunnel.knightkun.codes}
+      - DOMAIN=${TUNNERU_DOMAIN:-tunneru.knightkun.codes}
       - AUTH_TOKENS=${TUNNERU_AUTH_TOKENS:-}
     command:
-      - "--domain=${TUNNERU_DOMAIN:-tunnel.knightkun.codes}"
+      - "--domain=${TUNNERU_DOMAIN:-tunneru.knightkun.codes}"
       - "--control-addr=:7001"
       - "--proxy-addr=:8080"
       - "--auth-tokens=${TUNNERU_AUTH_TOKENS:-}"

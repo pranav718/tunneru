@@ -48,7 +48,7 @@ export const Hero: React.FC = () => {
 
           <div className="mt-8 space-y-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <CopyPill command="curl -fsSL https://tunneru.dev/install.sh | sh" className="w-full sm:w-auto" />
+              <CopyPill command="curl -fsSL https://raw.githubusercontent.com/pranav718/tunneru/main/install.sh | sh" className="w-full sm:w-auto" />
               <InteractiveLink href="#docs" label="read docs" />
             </div>
 
