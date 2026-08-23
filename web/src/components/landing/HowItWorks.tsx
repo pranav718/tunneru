@@ -89,12 +89,9 @@ export const HowItWorks: React.FC = () => {
                 }`}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-[11px] font-mono text-[var(--teal)] px-2 py-0.5 rounded border border-[var(--border-subtle)] bg-[var(--card-alt)]">
-                      step {step.number}
-                    </span>
-                    <span className="text-[10px] font-mono text-[var(--text-dim)] uppercase tracking-wider">
-                      {step.tag}
+                  <div className="mb-4">
+                    <span className="text-[12px] font-mono text-[var(--teal)]">
+                      {step.number}
                     </span>
                   </div>
 
@@ -125,11 +122,10 @@ export const HowItWorks: React.FC = () => {
         </div>
 
         <div className="mt-10 rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-6">
-          <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4 mb-4">
+          <div className="border-b border-[var(--border-subtle)] pb-4 mb-4">
             <span className="text-[12px] font-mono text-[var(--text-primary)] font-semibold">
               wire format: 9-byte multiplexer frame header
             </span>
-            <span className="text-[10px] font-mono text-[var(--text-dim)]">binary protocol spec</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 font-mono text-[11px]">

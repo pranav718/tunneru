@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Terminal, RotateCcw, Key, ShieldCheck, Cpu } from 'lucide-react';
 import { SlideUpText } from './SlideUpText';
 import { SpotlightCard } from './SpotlightCard';
 
@@ -24,15 +23,6 @@ export const FeatureGrid: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <SpotlightCard className="md:col-span-2">
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--teal)]">
-                  <Cpu size={18} />
-                </div>
-                <span className="text-[10px] font-mono text-[var(--text-dim)] uppercase tracking-wider">
-                  high performance
-                </span>
-              </div>
-
               <h3 className="text-[18px] font-semibold text-[var(--text-primary)] mb-2">
                 custom 9-byte binary multiplexer
               </h3>
@@ -60,15 +50,6 @@ export const FeatureGrid: React.FC = () => {
 
           <SpotlightCard>
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--blush)]">
-                  <RotateCcw size={18} />
-                </div>
-                <span className="text-[10px] font-mono text-[var(--text-dim)] uppercase tracking-wider">
-                  debugging
-                </span>
-              </div>
-
               <h3 className="text-[18px] font-semibold text-[var(--text-primary)] mb-2">
                 1-click webhook replay
               </h3>
@@ -89,15 +70,6 @@ export const FeatureGrid: React.FC = () => {
 
           <SpotlightCard>
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--status-warning)]">
-                  <Terminal size={18} />
-                </div>
-                <span className="text-[10px] font-mono text-[var(--text-dim)] uppercase tracking-wider">
-                  dual telemetry
-                </span>
-              </div>
-
               <h3 className="text-[18px] font-semibold text-[var(--text-primary)] mb-2">
                 bubble tea tui & web ui
               </h3>
@@ -114,15 +86,6 @@ export const FeatureGrid: React.FC = () => {
 
           <SpotlightCard>
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--status-success)]">
-                  <Key size={18} />
-                </div>
-                <span className="text-[10px] font-mono text-[var(--text-dim)] uppercase tracking-wider">
-                  security
-                </span>
-              </div>
-
               <h3 className="text-[18px] font-semibold text-[var(--text-primary)] mb-2">
                 subdomains & token auth
               </h3>
@@ -138,15 +101,6 @@ export const FeatureGrid: React.FC = () => {
 
           <SpotlightCard>
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--card-alt)] flex items-center justify-center text-[var(--teal)]">
-                  <ShieldCheck size={18} />
-                </div>
-                <span className="text-[10px] font-mono text-[var(--text-dim)] uppercase tracking-wider">
-                  privacy
-                </span>
-              </div>
-
               <h3 className="text-[18px] font-semibold text-[var(--text-primary)] mb-2">
                 zero signup & 100% private
               </h3>

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Copy, Check, Terminal, Key, Activity, Server, Sliders } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Copy, Check } from 'lucide-react';
 import { SlideUpText } from './SlideUpText';
 import { SpotlightCard } from './SpotlightCard';
 
@@ -46,7 +46,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'bash' }) => {
 export const Documentation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'quickstart' | 'auth' | 'inspect' | 'selfhost' | 'cli'>('quickstart');
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.toLowerCase().replace('#', '');
       if (hash === 'self-host' || hash === 'selfhost') {
@@ -68,11 +68,11 @@ export const Documentation: React.FC = () => {
   }, []);
 
   const tabs = [
-    { id: 'quickstart', label: 'quickstart', icon: Terminal },
-    { id: 'auth', label: 'auth & tokens', icon: Key },
-    { id: 'inspect', label: 'inspection & replay', icon: Activity },
-    { id: 'selfhost', label: 'self-host', icon: Server },
-    { id: 'cli', label: 'cli reference', icon: Sliders },
+    { id: 'quickstart', label: 'quickstart' },
+    { id: 'auth', label: 'auth & tokens' },
+    { id: 'inspect', label: 'inspection & replay' },
+    { id: 'selfhost', label: 'self-host' },
+    { id: 'cli', label: 'cli reference' },
   ] as const;
 
   return (
@@ -92,7 +92,6 @@ export const Documentation: React.FC = () => {
 
         <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
           {tabs.map((t) => {
-            const Icon = t.icon;
             const isActive = activeTab === t.id;
             return (
               <button
@@ -104,7 +103,6 @@ export const Documentation: React.FC = () => {
                     : 'bg-transparent border border-transparent text-[var(--text-dim)] hover:text-[var(--text-secondary)] hover:bg-[var(--card-hover)]'
                 }`}
               >
-                <Icon size={14} />
                 <span>{t.label}</span>
               </button>
             );

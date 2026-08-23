@@ -16,8 +16,8 @@ export default function LandingPage() {
         <Hero />
         <TextMarquee />
         <TerminalPreview />
-        <HowItWorks />
         <FeatureGrid />
+        <HowItWorks />
         <Documentation />
       </main>
 
