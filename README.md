@@ -51,34 +51,7 @@ a lightweight zero-dependency tunneling engine, binary multiplexer, and real-tim
 
 ## architecture
 
-```
-                     +---------------------------------------+
-                     |             public client             |
-                     |         (curl, browser, stripe)       |
-                     +-------------------+-------------------+
-                                         |
-                                         | HTTP / HTTPS
-                                         v
-                     +-------------------+-------------------+
-                     |           tunneru-server              |
-                     |   (:8080 proxy / :7001 control)       |
-                     +-------------------+-------------------+
-                                         |
-                                         | 9-byte binary frames
-                                         | persistent TCP stream
-                                         v
-                     +-------------------+-------------------+
-                     |           tunneru client              |
-                     |    (daemon + bubble tea live TUI)     |
-                     +---------+-------------------+---------+
-                               |                   |
-            HTTP forwarding    |                   | WebSocket events
-                               v                   v
-                     +---------+---------+   +-----+-----------------+
-                     |   local dev app   |   |   web inspector UI    |
-                     | (localhost:3000)  |   |  (localhost:4040)     |
-                     +-------------------+   +-----------------------+
-```
+![tunneru architecture](docs/architecture.png)
 
 ---
 
@@ -294,16 +267,7 @@ tunneru/
 
 tunneru multiplexes hundreds of concurrent HTTP requests across a single persistent TCP socket using a custom 9-byte binary frame header:
 
-```
-+---------------+-----------------------------+-----------------------------+
-| Type (1 Byte) |     Stream ID (4 Bytes)     |   Payload Length (4 Bytes)  |
-|     uint8     |      uint32 big-endian      |      uint32 big-endian      |
-+---------------+-----------------------------+-----------------------------+
-|                                                                           |
-|                        Payload Data (N Bytes)                             |
-|                                                                           |
-+---------------------------------------------------------------------------+
-```
+![tunneru wire format frame](docs/wire-format.png)
 
 1. **frame encoding**: when public HTTP traffic arrives at the server proxy, the raw HTTP request is framed with a 1-byte type (`0x01` data, `0x02` ping, `0x04` close), a unique `uint32` stream id, and a `uint32` payload length.
 
