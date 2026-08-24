@@ -44,6 +44,13 @@ func (s *Server) Record(record *RequestRecord) {
 
 func (s *Server) Start() error {
 	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/" {
+			http.Redirect(w, r, "http://localhost:3000/inspect", http.StatusTemporaryRedirect)
+			return
+		}
+		http.NotFound(w, r)
+	})
 	mux.HandleFunc("/api/requests", s.handleRequests)
 	mux.HandleFunc("/api/requests/", s.handleSingleRequest)
 	mux.HandleFunc("/ws", s.handleWebSocket)

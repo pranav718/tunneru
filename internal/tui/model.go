@@ -267,12 +267,12 @@ func (m Model) renderStatusBar() string {
 
 	right := KeybindStyle.Render("q quit   c clear")
 
-	cardInnerWidth := m.Width - 6
+	cardInnerWidth := m.Width - 10
 	gap := cardInnerWidth - lipgloss.Width(left) - lipgloss.Width(right)
 	if gap < 1 {
 		gap = 1
 	}
 
 	content := left + strings.Repeat(" ", gap) + right
-	return StatusBarStyle.Width(m.Width - 6).Render(content)
+	return StatusBarStyle.Width(cardInnerWidth).Render(content)
 }

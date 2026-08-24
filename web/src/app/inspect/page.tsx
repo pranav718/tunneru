@@ -25,9 +25,10 @@ export default function InspectorPage() {
         const res = await fetch('http://localhost:4040/api/requests');
         if (res.ok && !ignore) {
           const data: RequestRecord[] = await res.json();
-          setRequests(data || []);
-          if (data && data.length > 0) {
-            setSelectedId((curr) => curr || data[0].id);
+          const unique = Array.from(new Map((data || []).map((r) => [r.id, r])).values());
+          setRequests(unique);
+          if (unique.length > 0) {
+            setSelectedId((curr) => curr || unique[0].id);
           }
         }
       } catch {
@@ -52,8 +53,8 @@ export default function InspectorPage() {
           const record: RequestRecord = JSON.parse(event.data);
           if (!ignore) {
             setRequests((prev) => {
-              const updated = [record, ...prev.filter((r) => r.id !== record.id)];
-              return updated;
+              const filtered = prev.filter((r) => r.id !== record.id);
+              return [record, ...filtered];
             });
             setSelectedId((curr) => curr || record.id);
           }
@@ -96,6 +97,7 @@ export default function InspectorPage() {
   };
 
   const handleReplay = async (id: string) => {
+    if (isReplaying) return;
     setIsReplaying(true);
     try {
       const res = await fetch(`http://localhost:4040/api/requests/${id}/replay`, {
@@ -103,7 +105,10 @@ export default function InspectorPage() {
       });
       if (res.ok) {
         const newRecord: RequestRecord = await res.json();
-        setRequests((prev) => [newRecord, ...prev]);
+        setRequests((prev) => {
+          const filtered = prev.filter((r) => r.id !== newRecord.id);
+          return [newRecord, ...filtered];
+        });
         setSelectedId(newRecord.id);
       }
     } catch (err) {
@@ -119,25 +124,31 @@ export default function InspectorPage() {
     <div className="h-screen w-screen flex items-center justify-center bg-[var(--bg-main)]">
       <TechnicalBackground />
 
-      <div className="relative z-10 w-full h-full xl:w-[1400px] xl:h-[92vh] xl:rounded-lg flex flex-col border border-[var(--border-normal)] bg-[var(--canvas-bg)] overflow-hidden xl:shadow-[0_24px_80px_rgba(0,0,0,0.5)]">
-        <Header connected={connected} requests={requests} onClear={handleClear} />
-
-        <div className="flex flex-1 overflow-hidden">
-          <RequestList
+      <div className="relative z-10 w-full h-full max-w-[1400px] max-h-[900px] p-0 md:p-6 flex flex-col">
+        <div className="flex-1 rounded-none md:rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] shadow-2xl overflow-hidden flex flex-col">
+          <Header
+            connected={connected}
+            onClear={handleClear}
             requests={requests}
-            selectedId={selectedId}
-            onSelect={(id) => setSelectedId(id)}
-            search={search}
-            onSearchChange={setSearch}
-            methodFilter={methodFilter}
-            onMethodFilterChange={setMethodFilter}
           />
 
-          <RequestDetail
-            request={selectedRequest}
-            onReplay={handleReplay}
-            isReplaying={isReplaying}
-          />
+          <div className="flex-1 flex overflow-hidden">
+            <RequestList
+              requests={requests}
+              selectedId={selectedId}
+              onSelect={(id) => setSelectedId(id)}
+              search={search}
+              onSearchChange={setSearch}
+              methodFilter={methodFilter}
+              onMethodFilterChange={setMethodFilter}
+            />
+
+            <RequestDetail
+              request={selectedRequest}
+              onReplay={handleReplay}
+              isReplaying={isReplaying}
+            />
+          </div>
         </div>
       </div>
     </div>

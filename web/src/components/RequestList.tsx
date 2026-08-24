@@ -49,6 +49,7 @@ export const RequestList: React.FC<RequestListProps> = ({
     return matchesSearch && matchesMethod;
   });
 
+  const uniqueRequests = Array.from(new Map(filtered.map((r) => [r.id, r])).values());
   const methods: MethodFilter[] = ['ALL', 'GET', 'POST', 'PUT', 'DELETE'];
 
   return (
@@ -83,13 +84,13 @@ export const RequestList: React.FC<RequestListProps> = ({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {filtered.length === 0 ? (
+        {uniqueRequests.length === 0 ? (
           <div className="p-8 text-center text-[var(--text-dim)] text-[11px] flex flex-col items-center justify-center h-full gap-1">
             <p>no requests yet</p>
             <p className="text-[10px]">send traffic through your tunnel</p>
           </div>
         ) : (
-          filtered.map((req) => {
+          uniqueRequests.map((req) => {
             const isSelected = req.id === selectedId;
             const timeStr = new Date(req.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
