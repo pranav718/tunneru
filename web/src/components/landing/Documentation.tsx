@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { SlideUpText } from './SlideUpText';
 import { SpotlightCard } from './SpotlightCard';
+import { InteractiveLink } from './InteractiveLink';
 
 interface CodeBlockProps {
   code: string;
@@ -347,6 +348,14 @@ export const Documentation: React.FC = () => {
             </div>
           )}
         </SpotlightCard>
+
+        <div className="mt-10 text-center">
+          <InteractiveLink
+            href="https://github.com/pranav718/tunneru#readme"
+            label="read full protocol spec & architecture in github readme"
+            external={true}
+          />
+        </div>
       </div>
     </section>
   );
