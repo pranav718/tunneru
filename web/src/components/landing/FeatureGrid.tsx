@@ -6,7 +6,7 @@ import { SpotlightCard } from './SpotlightCard';
 
 export const FeatureGrid: React.FC = () => {
   return (
-    <section id="features" className="border-t border-[var(--border-subtle)] py-24 bg-[var(--bg-main)]">
+    <section id="features" className="border-t border-[var(--border-subtle)] py-16 sm:py-24 bg-[var(--bg-main)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="text-[13px] font-mono text-[var(--teal)] tracking-wider">
@@ -32,7 +32,7 @@ export const FeatureGrid: React.FC = () => {
               </p>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] grid grid-cols-3 gap-3 font-mono text-center">
+            <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-center">
               <div className="rounded border border-[var(--border-subtle)] bg-[var(--card-alt)] py-2">
                 <div className="text-[16px] font-bold text-[var(--teal)]">&lt; 1ms</div>
                 <div className="text-[10px] text-[var(--text-dim)]">multiplex latency</div>

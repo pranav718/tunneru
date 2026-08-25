@@ -77,8 +77,8 @@ export const Documentation: React.FC = () => {
   ] as const;
 
   return (
-    <section id="docs" className="border-t border-[var(--border-subtle)] py-24 bg-[var(--bg-main)]">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="docs" className="border-t border-[var(--border-subtle)] py-16 sm:py-24 bg-[var(--bg-main)]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
           <span className="text-[13px] font-mono text-[var(--teal)] tracking-wider">
             developer guide & reference
@@ -98,7 +98,7 @@ export const Documentation: React.FC = () => {
               <button
                 key={t.id}
                 onClick={() => setActiveTab(t.id)}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[13px] font-mono transition-all duration-150 active:scale-95 cursor-pointer ${
+                className={`inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-[12px] sm:text-[13px] font-mono transition-all duration-150 active:scale-95 cursor-pointer ${
                   isActive
                     ? 'bg-[var(--card-alt)] border border-[var(--border-accent)] text-[var(--teal)] shadow-sm'
                     : 'bg-transparent border border-transparent text-[var(--text-dim)] hover:text-[var(--text-secondary)] hover:bg-[var(--card-hover)]'
@@ -259,7 +259,7 @@ export const Documentation: React.FC = () => {
               <div>
                 <h4 className="text-[14px] font-semibold text-[var(--teal)] font-mono mb-3">tunneru (client)</h4>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left font-mono text-[12px] border-collapse">
+                  <table className="w-full text-left font-mono text-[11px] sm:text-[12px] border-collapse min-w-[500px]">
                     <thead>
                       <tr className="border-b border-[var(--border-subtle)] text-[var(--text-dim)]">
                         <th className="py-2.5 px-3">flag</th>
@@ -301,7 +301,7 @@ export const Documentation: React.FC = () => {
               <div className="pt-4">
                 <h4 className="text-[14px] font-semibold text-[var(--blush)] font-mono mb-3">tunneru-server</h4>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left font-mono text-[12px] border-collapse">
+                  <table className="w-full text-left font-mono text-[11px] sm:text-[12px] border-collapse min-w-[500px]">
                     <thead>
                       <tr className="border-b border-[var(--border-subtle)] text-[var(--text-dim)]">
                         <th className="py-2.5 px-3">flag</th>

@@ -171,11 +171,11 @@ export const TerminalPreview: React.FC = () => {
           </div>
 
           <div className="p-5 space-y-4">
-            <div className="rounded-lg border border-[var(--border-subtle)] bg-[#1e1a1c] p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[11px]">
+            <div className="rounded-lg border border-[var(--border-subtle)] bg-[#1e1a1c] p-3 sm:p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[10px] sm:text-[11px]">
               <div className="space-y-1.5">
                 <div className="flex items-center gap-3">
-                  <span className="text-[var(--text-dim)] w-20">tunnel:</span>
-                  <span className="text-[var(--teal)] font-medium">https://myapp.tunneru.knightkun.codes</span>
+                  <span className="text-[var(--text-dim)] w-16 sm:w-20 shrink-0">tunnel:</span>
+                  <span className="text-[var(--teal)] font-medium truncate">https://myapp.tunneru.knightkun.codes</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-[var(--text-dim)] w-20">forwarding:</span>
@@ -193,10 +193,10 @@ export const TerminalPreview: React.FC = () => {
             </div>
 
             <div className="rounded-lg border border-[var(--border-subtle)] bg-[#141012] overflow-hidden">
-              <div className="grid grid-cols-12 px-4 py-2 border-b border-[var(--border-subtle)] text-[10px] text-[var(--text-dim)] tracking-wider">
-                <div className="col-span-2">time</div>
-                <div className="col-span-2">method</div>
-                <div className="col-span-4 sm:col-span-5">path</div>
+              <div className="grid grid-cols-12 px-3 sm:px-4 py-2 border-b border-[var(--border-subtle)] text-[9px] sm:text-[10px] text-[var(--text-dim)] tracking-wider">
+                <div className="hidden sm:block col-span-2">time</div>
+                <div className="col-span-3 sm:col-span-2">method</div>
+                <div className="col-span-5 sm:col-span-5">path</div>
                 <div className="col-span-2 sm:col-span-2">status</div>
                 <div className="col-span-2 sm:col-span-1 text-right">lat</div>
               </div>
@@ -210,19 +210,19 @@ export const TerminalPreview: React.FC = () => {
                   requests.map((req) => (
                     <div
                       key={req.id}
-                      className="grid grid-cols-12 px-4 py-2.5 items-center text-[11px] hover:bg-[#1e1a1c]/60 transition-colors duration-100 animate-in fade-in slide-in-from-top-1"
+                      className="grid grid-cols-12 px-3 sm:px-4 py-2 sm:py-2.5 items-center text-[10px] sm:text-[11px] hover:bg-[#1e1a1c]/60 transition-colors duration-100 animate-in fade-in slide-in-from-top-1"
                     >
-                      <div className="col-span-2 text-[var(--text-dim)] text-[10px]">{req.time}</div>
-                      <div className={`col-span-2 font-semibold ${getMethodColor(req.method)}`}>
+                      <div className="hidden sm:block col-span-2 text-[var(--text-dim)] text-[10px]">{req.time}</div>
+                      <div className={`col-span-3 sm:col-span-2 font-semibold ${getMethodColor(req.method)}`}>
                         {req.method}
                       </div>
-                      <div className="col-span-4 sm:col-span-5 text-[var(--text-primary)] truncate pr-2">
+                      <div className="col-span-5 sm:col-span-5 text-[var(--text-primary)] truncate pr-2">
                         {req.path}
                       </div>
-                      <div className={`col-span-2 sm:col-span-2 ${getStatusColor(req.status)} text-[10px]`}>
+                      <div className={`col-span-2 sm:col-span-2 ${getStatusColor(req.status)} text-[9px] sm:text-[10px]`}>
                         {req.statusText}
                       </div>
-                      <div className="col-span-2 sm:col-span-1 text-right text-[var(--text-dim)] text-[10px]">
+                      <div className="col-span-2 sm:col-span-1 text-right text-[var(--text-dim)] text-[9px] sm:text-[10px]">
                         {req.latency}ms
                       </div>
                     </div>
@@ -231,14 +231,14 @@ export const TerminalPreview: React.FC = () => {
               </div>
             </div>
 
-            <div className="rounded-lg border border-[var(--border-subtle)] bg-[#1e1a1c] px-4 py-2 flex flex-wrap items-center justify-between gap-3 text-[10px] text-[var(--text-dim)]">
-              <div className="flex items-center gap-4">
-                <span className="text-[var(--text-primary)]">{total} requests</span>
+            <div className="rounded-lg border border-[var(--border-subtle)] bg-[#1e1a1c] px-3 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-2 sm:gap-3 text-[9px] sm:text-[10px] text-[var(--text-dim)]">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <span className="text-[var(--text-primary)]">{total} reqs</span>
                 <span className="text-[var(--status-success)]">{okCount} ok</span>
                 <span className="text-[var(--status-error)]">{errCount} err</span>
                 <span>{avgLatency}ms avg</span>
               </div>
-              <div className="flex items-center gap-3 text-[9px]">
+              <div className="hidden sm:flex items-center gap-3 text-[9px]">
                 <span>[c] clear</span>
                 <span>[↑/↓] scroll</span>
                 <span>[q] quit</span>

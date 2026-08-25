@@ -61,8 +61,8 @@ export const HowItWorks: React.FC = () => {
   const [activeStep, setActiveStep] = useState(1);
 
   return (
-    <section id="how-it-works" className="border-t border-[var(--border-subtle)] py-24 bg-[var(--bg-main)]">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="how-it-works" className="border-t border-[var(--border-subtle)] py-16 sm:py-24 bg-[var(--bg-main)]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
           <span className="text-[13px] font-mono text-[var(--teal)] tracking-wider">
             architecture & data flow
@@ -82,7 +82,7 @@ export const HowItWorks: React.FC = () => {
               <div
                 key={step.number}
                 onClick={() => setActiveStep(idx)}
-                className={`relative rounded-xl border p-6 flex flex-col justify-between transition-all duration-200 cursor-pointer ${
+                className={`relative rounded-xl border p-4 sm:p-6 flex flex-col justify-between transition-all duration-200 cursor-pointer ${
                   isActive
                     ? 'border-[var(--border-accent)] bg-[var(--card-panel)] shadow-[0_8px_30px_rgba(231,208,200,0.06)]'
                     : 'border-[var(--border-normal)] bg-[var(--card-alt)] hover:border-[var(--border-accent)]/50'
@@ -121,14 +121,14 @@ export const HowItWorks: React.FC = () => {
           })}
         </div>
 
-        <div className="mt-10 rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-6">
+        <div className="mt-10 rounded-xl border border-[var(--border-normal)] bg-[var(--card-panel)] p-4 sm:p-6">
           <div className="border-b border-[var(--border-subtle)] pb-4 mb-4">
-            <span className="text-[12px] font-mono text-[var(--text-primary)] font-semibold">
+            <span className="text-[11px] sm:text-[12px] font-mono text-[var(--text-primary)] font-semibold">
               wire format: 9-byte multiplexer frame header
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 font-mono text-[11px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 font-mono text-[11px]">
             <div className="rounded border border-[var(--border-subtle)] bg-[var(--card-alt)] p-3">
               <div className="text-[var(--text-dim)] text-[10px] mb-1">offset 0x00 (1 byte)</div>
               <div className="text-[var(--teal)] font-bold">frame type</div>
