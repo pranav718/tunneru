@@ -6,12 +6,13 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/pranav718/tunneru/internal/mux"
 	"github.com/pranav718/tunneru/internal/proto"
 )
 
-type ControlServer struct { //manages client tunnel connections over tcp
+type ControlServer struct {
 	addr     string
 	domain   string
 	registry *Registry
@@ -33,7 +34,6 @@ func (s *ControlServer) Registry() *Registry {
 
 func (s *ControlServer) Start() error {
 	listener, err := net.Listen("tcp", s.addr)
-
 	if err != nil {
 		return fmt.Errorf("control server listen: %w", err)
 	}
@@ -54,9 +54,9 @@ func (s *ControlServer) startAPI() {
 	muxRouter := http.NewServeMux()
 	muxRouter.HandleFunc("/api/tunnels", s.handleTunnelList)
 
-	log.Printf("api server listening on :7002")
+	log.Printf("api server listening on 127.0.0.1:7002")
 
-	if err := http.ListenAndServe(":7002", muxRouter); err != nil {
+	if err := http.ListenAndServe("127.0.0.1:7002", muxRouter); err != nil {
 		log.Printf("api server error: %v", err)
 	}
 }
@@ -67,16 +67,13 @@ func (s *ControlServer) handleTunnelList(w http.ResponseWriter, r *http.Request)
 	type tunnelResponse struct {
 		Subdomain  string `json:"subdomain"`
 		URL        string `json:"url"`
-		RemoteAddr string `json:"remote_addr"`
 	}
 
 	resp := make([]tunnelResponse, len(tunnels))
-	
 	for i, t := range tunnels {
 		resp[i] = tunnelResponse{
 			Subdomain:  t.Subdomain,
 			URL:        t.URL,
-			RemoteAddr: t.RemoteAddr,
 		}
 	}
 
@@ -98,6 +95,7 @@ func (s *ControlServer) handleClient(conn net.Conn) {
 		log.Printf("client disconnected: %s", remoteAddr)
 	}()
 
+	_ = conn.SetDeadline(time.Now().Add(10 * time.Second))
 
 	msg, err := proto.Decode(conn)
 	if err != nil {
@@ -137,7 +135,12 @@ func (s *ControlServer) handleClient(conn net.Conn) {
 		Subdomain: info.Subdomain,
 		URL:       info.URL,
 	}
-	_ = proto.Encode(conn, resp)
+	if err := proto.Encode(conn, resp); err != nil {
+		log.Printf("failed to send registered response to %s: %v", remoteAddr, err)
+		return
+	}
 
-	<-session.AcceptStreamChan() 
+	_ = conn.SetDeadline(time.Time{})
+
+	<-session.AcceptStreamChan()
 }

@@ -6,13 +6,42 @@ import (
 	"log"
 	"math/big"
 	"net"
+	"regexp"
+	"strings"
 	"sync"
-	
+
 	"github.com/pranav718/tunneru/internal/mux"
 )
 
 const subdomainChars = "abcdefghijklmnopqrstuvwxyz0123456789"
 const subdomainLength = 6
+const MaxTunnelsPerIP = 5
+const MaxTotalTunnels = 1000
+
+var subdomainRegex = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]{1,30}[a-z0-9])?$`)
+
+var reservedSubdomains = map[string]bool{
+	"admin":     true,
+	"api":       true,
+	"relay":     true,
+	"www":       true,
+	"mail":      true,
+	"tunneru":   true,
+	"localhost": true,
+	"control":   true,
+	"server":    true,
+	"proxy":     true,
+	"internal":  true,
+	"dashboard": true,
+	"auth":      true,
+	"ns1":       true,
+	"ns2":       true,
+	"static":    true,
+	"assets":    true,
+	"status":    true,
+	"health":    true,
+	"root":      true,
+}
 
 type TunnelInfo struct {
 	Subdomain  string
@@ -20,26 +49,67 @@ type TunnelInfo struct {
 	Conn       net.Conn
 	Session    *mux.Session
 	RemoteAddr string
+	ClientIP   string
 }
 
 type Registry struct {
-	mu      sync.RWMutex
-	tunnels map[string]*TunnelInfo
-	domain  string
+	mu       sync.RWMutex
+	tunnels  map[string]*TunnelInfo
+	ipCounts map[string]int
+	domain   string
 }
 
 func NewRegistry(domain string) *Registry {
 	return &Registry{
-		tunnels: make(map[string]*TunnelInfo),
-		domain:  domain,
+		tunnels:  make(map[string]*TunnelInfo),
+		ipCounts: make(map[string]int),
+		domain:   domain,
 	}
 }
 
-func (r *Registry) Register(subdomain string, conn net.Conn, session *mux.Session) (*TunnelInfo, error) { //this gonna add a tunnel to the registry//if subdomain is empty then create a random one and some more obvious stuffs
+func extractClientIP(remoteAddr string) string {
+	host, _, err := net.SplitHostPort(remoteAddr)
+	if err != nil {
+		return remoteAddr
+	}
+	return host
+}
+
+func ValidateSubdomain(subdomain string) error {
+	subdomain = strings.ToLower(strings.TrimSpace(subdomain))
+	if len(subdomain) < 3 || len(subdomain) > 32 {
+		return fmt.Errorf("subdomain must be between 3 and 32 characters")
+	}
+	if !subdomainRegex.MatchString(subdomain) {
+		return fmt.Errorf("subdomain can only contain lowercase alphanumeric characters and hyphens")
+	}
+	if reservedSubdomains[subdomain] {
+		return fmt.Errorf("subdomain %q is reserved", subdomain)
+	}
+	return nil
+}
+
+func (r *Registry) Register(subdomain string, conn net.Conn, session *mux.Session) (*TunnelInfo, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	if subdomain == "" {
+	if len(r.tunnels) >= MaxTotalTunnels {
+		return nil, fmt.Errorf("server at maximum capacity (%d tunnels)", MaxTotalTunnels)
+	}
+
+	remoteAddr := conn.RemoteAddr().String()
+	clientIP := extractClientIP(remoteAddr)
+
+	if r.ipCounts[clientIP] >= MaxTunnelsPerIP {
+		return nil, fmt.Errorf("exceeded maximum active tunnels limit (%d per IP)", MaxTunnelsPerIP)
+	}
+
+	if subdomain != "" {
+		subdomain = strings.ToLower(strings.TrimSpace(subdomain))
+		if err := ValidateSubdomain(subdomain); err != nil {
+			return nil, err
+		}
+	} else {
 		var err error
 		subdomain, err = r.generateSubdomain()
 		if err != nil {
@@ -56,11 +126,13 @@ func (r *Registry) Register(subdomain string, conn net.Conn, session *mux.Sessio
 		URL:        fmt.Sprintf("%s.%s", subdomain, r.domain),
 		Conn:       conn,
 		Session:    session,
-		RemoteAddr: conn.RemoteAddr().String(),
+		RemoteAddr: remoteAddr,
+		ClientIP:   clientIP,
 	}
 
 	r.tunnels[subdomain] = info
-	log.Printf("registry: registered %s (%s)", subdomain, info.RemoteAddr)
+	r.ipCounts[clientIP]++
+	log.Printf("registry: registered %s (%s, ip tunnels: %d)", subdomain, info.RemoteAddr, r.ipCounts[clientIP])
 
 	return info, nil
 }
@@ -71,6 +143,16 @@ func (r *Registry) Deregister(subdomain string) {
 
 	if info, exists := r.tunnels[subdomain]; exists {
 		delete(r.tunnels, subdomain)
+		clientIP := info.ClientIP
+		if clientIP == "" {
+			clientIP = extractClientIP(info.RemoteAddr)
+		}
+		if r.ipCounts[clientIP] > 0 {
+			r.ipCounts[clientIP]--
+			if r.ipCounts[clientIP] == 0 {
+				delete(r.ipCounts, clientIP)
+			}
+		}
 		log.Printf("registry: deregistered %s (%s)", subdomain, info.RemoteAddr)
 	}
 }
@@ -95,7 +177,7 @@ func (r *Registry) ActiveTunnels() []*TunnelInfo {
 }
 
 func (r *Registry) generateSubdomain() (string, error) {
-	for attempts := 0; attempts < 10; attempts++ {
+	for attempts := 0; attempts < 20; attempts++ {
 		sub := make([]byte, subdomainLength)
 
 		for i := range sub {
@@ -107,9 +189,11 @@ func (r *Registry) generateSubdomain() (string, error) {
 		}
 		candidate := string(sub)
 
-		if _, exists := r.tunnels[candidate]; !exists {
-			return candidate, nil
+		if !reservedSubdomains[candidate] {
+			if _, exists := r.tunnels[candidate]; !exists {
+				return candidate, nil
+			}
 		}
 	}
-	return "", fmt.Errorf("failed to generate unique subdomain after 10 attempts")
+	return "", fmt.Errorf("failed to generate unique subdomain after 20 attempts")
 }

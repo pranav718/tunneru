@@ -28,6 +28,8 @@ func (p *HTTPProxy) Start() error {
 }
 
 func (p *HTTPProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
+
 	subdomain := ExtractSubdomain(r.Host, p.domain)
 	if subdomain == "" {
 		http.Error(w, fmt.Sprintf("tunneru: no tunnel specified for host %q", r.Host), http.StatusNotFound)
