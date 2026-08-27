@@ -141,29 +141,35 @@ tunneru 3000 -s myapp
 
 authenticate with a private server:
 ```bash
-tunneru 3000 -s myapp -t secrettoken123 --server tunneru.knightkun.codes:7001
-```
-
-disable the web inspector:
-```bash
-tunneru 3000 --inspect=false
+tunneru 3000 -s myapp -t secrettoken123 --server tunnel.mycompany.dev:7001
 ```
 
 ### 4. self-hosting the server
 
-run `tunneru-server` on any linux VPS (hetzner, digitalocean, fly.io, aws):
+run `tunneru-server` on any linux VPS (azure, hetzner, digitalocean, fly.io):
 
 ```bash
 ./tunneru-server \
-  --domain tunneru.knightkun.codes \
+  --domain mycompany.dev \
   --control-addr :7001 \
-  --proxy-addr :8080 \
+  --proxy-addr 127.0.0.1:8080 \
   --auth-tokens secrettoken123,friendtoken456
 ```
 
-or launch via docker compose:
-```bash
-docker compose up -d
+automatic on-demand HTTPS with caddy:
+```caddyfile
+{
+    on_demand_tls {
+        ask http://127.0.0.1:7002/api/tls-check
+    }
+}
+
+https://*.mycompany.dev {
+    tls {
+        on_demand
+    }
+    reverse_proxy 127.0.0.1:8080
+}
 ```
 
 ### 5. CLI flags reference
@@ -173,10 +179,8 @@ docker compose up -d
 | flag | type | default | description |
 |---|---|---|---|
 | `-s, --subdomain` | string | `""` | requested subdomain for public routing |
-| `-t, --token` | string | `""` | authentication token for protected servers |
-| `--server` | string | `"tunneru.knightkun.codes:7001"` | control server address |
-| `--inspect` | bool | `true` | enable the local web inspector server |
-| `--inspect-addr` | string | `":4040"` | listening address for the web inspector UI |
+| `-t, --authtoken` | string | `""` | authentication token for protected servers |
+| `--server` | string | `"relay.tunneru.knightkun.codes:7001"` | control server address |
 
 #### server flags (`tunneru-server`)
 

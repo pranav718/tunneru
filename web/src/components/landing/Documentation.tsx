@@ -137,7 +137,7 @@ export const Documentation: React.FC = () => {
                 <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed mb-3">
                   specify a desired subdomain if available on the server.
                 </p>
-                <CodeBlock code="tunneru 3000 --subdomain myapp" />
+                <CodeBlock code="tunneru 3000 -s myapp" />
               </div>
             </div>
           )}
@@ -164,7 +164,7 @@ export const Documentation: React.FC = () => {
                 <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
                   useful in ci/cd pipelines, github actions, and ephemeral test environments.
                 </p>
-                <CodeBlock code="tunneru 3000 --authtoken $TUNNERU_AUTH_TOKEN --subdomain staging" />
+                <CodeBlock code="tunneru 3000 -t $TUNNERU_AUTH_TOKEN -s staging" />
               </div>
             </div>
           )}
@@ -206,7 +206,7 @@ export const Documentation: React.FC = () => {
               <div>
                 <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">self-host your own server</h3>
                 <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed">
-                  deploy the lightweight tunneru-server binary on any vps, docker container, or kubernetes cluster.
+                  deploy the lightweight tunneru-server binary on any vps, docker container, or cloud vm.
                 </p>
               </div>
 
@@ -225,24 +225,30 @@ export const Documentation: React.FC = () => {
               </div>
 
               <div>
-                <h4 className="text-[15px] font-medium text-[var(--text-primary)] mb-2">caddy reverse proxy configuration</h4>
+                <h4 className="text-[15px] font-medium text-[var(--text-primary)] mb-2">caddy on-demand tls configuration</h4>
                 <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
                   sample caddyfile for automatic wildcard let&apos;s encrypt tls certificates.
                 </p>
                 <CodeBlock
                   language="caddyfile"
-                  code="*.mycompany.dev {
-  tls {
-    dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+                  code="{
+  on_demand_tls {
+    ask http://127.0.0.1:7002/api/tls-check
   }
-  reverse_proxy localhost:8080
+}
+
+https://*.mycompany.dev {
+  tls {
+    on_demand
+  }
+  reverse_proxy 127.0.0.1:8080
 }"
                 />
               </div>
 
               <div>
                 <h4 className="text-[15px] font-medium text-[var(--text-primary)] mb-2">connect client to your self-hosted server</h4>
-                <CodeBlock code="tunneru 3000 --server tunnel.mycompany.dev:7001 --subdomain test" />
+                <CodeBlock code="tunneru 3000 --server tunnel.mycompany.dev:7001 -s test" />
               </div>
             </div>
           )}
@@ -282,13 +288,13 @@ export const Documentation: React.FC = () => {
                         <td className="py-2.5 px-3">tunneru server control address</td>
                       </tr>
                       <tr>
-                        <td className="py-2.5 px-3 text-[var(--text-primary)]">--subdomain</td>
+                        <td className="py-2.5 px-3 text-[var(--text-primary)]">-s, --subdomain</td>
                         <td className="py-2.5 px-3">string</td>
                         <td className="py-2.5 px-3">&quot;&quot;</td>
                         <td className="py-2.5 px-3">requested custom subdomain name</td>
                       </tr>
                       <tr>
-                        <td className="py-2.5 px-3 text-[var(--text-primary)]">--authtoken</td>
+                        <td className="py-2.5 px-3 text-[var(--text-primary)]">-t, --authtoken</td>
                         <td className="py-2.5 px-3">string</td>
                         <td className="py-2.5 px-3">&quot;&quot;</td>
                         <td className="py-2.5 px-3">authentication token for protected servers</td>
