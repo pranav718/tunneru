@@ -52,7 +52,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ children, classNam
           WebkitMaskImage: `radial-gradient(180px circle at ${position.x}px ${position.y}px, black, transparent 70%)`,
         }}
       />
-      <div className="relative z-10 h-full flex flex-col justify-between p-7">
+      <div className="relative z-10 h-full flex flex-col justify-between p-4 sm:p-7">
         {children}
       </div>
     </div>

@@ -129,7 +129,7 @@ export const TerminalPreview: React.FC = () => {
 
   return (
     <section id="terminal-preview" className="border-t border-[var(--border-subtle)] py-20">
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-10">
           <span className="text-[13px] font-mono text-[var(--teal)] tracking-wider">
             live terminal inspection

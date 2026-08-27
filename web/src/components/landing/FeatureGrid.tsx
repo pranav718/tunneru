@@ -7,7 +7,7 @@ import { SpotlightCard } from './SpotlightCard';
 export const FeatureGrid: React.FC = () => {
   return (
     <section id="features" className="border-t border-[var(--border-subtle)] py-16 sm:py-24 bg-[var(--bg-main)]">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
           <span className="text-[13px] font-mono text-[var(--teal)] tracking-wider">
             engineering highlights

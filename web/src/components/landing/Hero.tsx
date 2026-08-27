@@ -33,7 +33,7 @@ export const Hero: React.FC = () => {
         <ParticleTunnel />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 md:py-32">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-24 md:py-32">
         <div className="max-w-lg">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.15] text-[var(--text-primary)]">
             your localhost,

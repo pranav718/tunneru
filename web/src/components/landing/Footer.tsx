@@ -9,7 +9,7 @@ const XIcon = ({ size = 12 }: { size?: number }) => (
 export const Footer: React.FC = () => {
   return (
     <footer className="border-t border-[var(--border-subtle)] bg-[var(--bg-main)]">
-      <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
           <span className="text-[13px] font-mono font-semibold text-[var(--text-primary)]">
             tunneru

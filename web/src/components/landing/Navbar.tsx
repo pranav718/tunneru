@@ -35,7 +35,7 @@ export const Navbar: React.FC = () => {
           : 'bg-transparent border-b border-transparent'
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between relative">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between relative">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-[15px] font-semibold text-[var(--text-primary)] tracking-tight">
@@ -88,7 +88,7 @@ export const Navbar: React.FC = () => {
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden border-t border-[var(--border-normal)] bg-[var(--bg-main)]/95 backdrop-blur-xl px-6 py-4 flex flex-col gap-3">
+        <div className="md:hidden border-t border-[var(--border-normal)] bg-[var(--bg-main)]/95 backdrop-blur-xl px-4 sm:px-6 py-4 flex flex-col gap-3">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}

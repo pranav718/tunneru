@@ -37,7 +37,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'bash' }) => {
           <span>{copied ? 'copied' : 'copy'}</span>
         </button>
       </div>
-      <pre className="p-4 text-[13px] font-mono text-[var(--text-primary)] overflow-x-auto leading-relaxed">
+      <pre className="p-3 sm:p-4 text-[11px] sm:text-[13px] font-mono text-[var(--text-primary)] overflow-x-auto leading-relaxed">
         <code>{code}</code>
       </pre>
     </div>
