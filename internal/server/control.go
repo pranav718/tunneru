@@ -53,12 +53,32 @@ func (s *ControlServer) Start() error {
 func (s *ControlServer) startAPI() {
 	muxRouter := http.NewServeMux()
 	muxRouter.HandleFunc("/api/tunnels", s.handleTunnelList)
+	muxRouter.HandleFunc("/api/tls-check", s.handleTLSCheck)
 
 	log.Printf("api server listening on 127.0.0.1:7002")
 
 	if err := http.ListenAndServe("127.0.0.1:7002", muxRouter); err != nil {
 		log.Printf("api server error: %v", err)
 	}
+}
+
+func (s *ControlServer) handleTLSCheck(w http.ResponseWriter, r *http.Request) {
+	domainParam := r.URL.Query().Get("domain")
+	if domainParam == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	subdomain := ExtractSubdomain(domainParam, s.domain)
+	if subdomain == "" {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	tunnel := s.registry.Lookup(subdomain)
+	if tunnel == nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func (s *ControlServer) handleTunnelList(w http.ResponseWriter, r *http.Request) {

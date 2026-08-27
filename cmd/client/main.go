@@ -57,9 +57,9 @@ var authtokenCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.Flags().StringVar(&serverAddr, "server", "localhost:7001", "tunneru server address")
-	rootCmd.Flags().StringVar(&subdomain, "subdomain", "", "requested subdomain (random if empty)")
-	rootCmd.Flags().StringVar(&authToken, "authtoken", "", "tunneru auth token")
+	rootCmd.Flags().StringVar(&serverAddr, "server", "relay.tunneru.knightkun.codes:7001", "tunneru server address")
+	rootCmd.Flags().StringVarP(&subdomain, "subdomain", "s", "", "requested subdomain (random if empty)")
+	rootCmd.Flags().StringVarP(&authToken, "authtoken", "t", "", "tunneru auth token")
 	rootCmd.AddCommand(authtokenCmd)
 }
 

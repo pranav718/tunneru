@@ -1,4 +1,4 @@
-# Binaries (root-only, so cmd/server/ and internal/client/ aren't ignored)
+tunneru
 tunneru-server
 tunneru-client
 /server

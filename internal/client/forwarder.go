@@ -102,13 +102,17 @@ func (f *Forwarder) HandleStream(stream *mux.Stream) {
 			})
 		}
 
+		errMsg := []byte("tunneru: 502 bad gateway (could not connect to localhost)\n")
 		badGateway := &http.Response{
-			StatusCode: http.StatusBadGateway,
-			ProtoMajor: 1,
-			ProtoMinor: 1,
-			Header:     make(http.Header),
-			Body:       io.NopCloser(bufio.NewReader(nil)),
+			StatusCode:    http.StatusBadGateway,
+			Status:        "502 Bad Gateway",
+			ProtoMajor:    1,
+			ProtoMinor:    1,
+			Header:        make(http.Header),
+			Body:          io.NopCloser(bytes.NewReader(errMsg)),
+			ContentLength: int64(len(errMsg)),
 		}
+		badGateway.Header.Set("Content-Type", "text/plain")
 		_ = badGateway.Write(stream)
 		return
 	}

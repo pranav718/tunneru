@@ -278,7 +278,7 @@ export const Documentation: React.FC = () => {
                       <tr>
                         <td className="py-2.5 px-3 text-[var(--text-primary)]">--server</td>
                         <td className="py-2.5 px-3">string</td>
-                        <td className="py-2.5 px-3">&quot;localhost:7001&quot;</td>
+                        <td className="py-2.5 px-3">&quot;relay.tunneru.knightkun.codes:7001&quot;</td>
                         <td className="py-2.5 px-3">tunneru server control address</td>
                       </tr>
                       <tr>
