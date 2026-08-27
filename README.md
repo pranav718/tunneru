@@ -130,23 +130,27 @@ start your local web server (e.g. next.js, rails, fastapi, express) on port 3000
 tunneru 3000
 ```
 
-tunneru connects to the server, claims a public url (e.g. `https://myapp.tunneru.knightkun.codes`), and opens the live terminal TUI.
+tunneru automatically connects to the public cloud relay (`relay.tunneru.knightkun.codes`), assigns a random public URL, and launches the live terminal TUI.
 
 ### 3. custom subdomains and token auth
 
-request a specific subdomain:
+request a custom subdomain:
 ```bash
 tunneru 3000 -s myapp
 ```
 
-authenticate with a private server:
+your app is now instantly live on the public internet at `https://myapp.tunneru.knightkun.codes` with zero accounts and automatic HTTPS!
+
+to connect to a custom or private self-hosted server instead:
 ```bash
 tunneru 3000 -s myapp -t secrettoken123 --server tunnel.mycompany.dev:7001
 ```
 
-### 4. self-hosting the server
+### 4. self-hosting the server (optional)
 
-run `tunneru-server` on any linux VPS (azure, hetzner, digitalocean, fly.io):
+*note: self-hosting is completely optional. you can use the free public relay at `tunneru.knightkun.codes` with zero setup.*
+
+if you prefer to run your own private infrastructure, deploy `tunneru-server` on any linux VPS (azure, hetzner, digitalocean, fly.io):
 
 ```bash
 ./tunneru-server \
