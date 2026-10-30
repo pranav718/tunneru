@@ -1,0 +1,3 @@
+# Exclude frontend dashboard from language statistics so repository is classified as Go
+web/* linguist-vendored linguist-detectable=false
+web/** linguist-vendored linguist-detectable=false
