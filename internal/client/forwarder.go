@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
+	"sync"
 	"time"
 
 	"github.com/pranav718/tunneru/internal/inspection"
@@ -16,16 +18,37 @@ import (
 )
 
 type Forwarder struct {
-	localPort   int
-	httpClient  *http.Client
-	OnRequest   func(tui.RequestEvent)
+	localPort    int
+	httpClient   *http.Client
+	OnRequest    func(tui.RequestEvent)
 	OnInspection func(*inspection.RequestRecord)
 }
 
+var readerPool = sync.Pool{
+	New: func() any {
+		return bufio.NewReaderSize(nil, 4096)
+	},
+}
+
 func NewForwarder(localPort int) *Forwarder {
+	transport := &http.Transport{
+		Proxy: nil,
+		DialContext: (&net.Dialer{
+			Timeout:   5 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		ForceAttemptHTTP2:     false,
+		MaxIdleConns:          256,
+		MaxIdleConnsPerHost:   128,
+		IdleConnTimeout:       90 * time.Second,
+		ResponseHeaderTimeout: 30 * time.Second,
+		DisableCompression:    true,
+	}
+
 	return &Forwarder{
 		localPort: localPort,
 		httpClient: &http.Client{
+			Transport: transport,
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
 				return http.ErrUseLastResponse
 			},
@@ -36,8 +59,11 @@ func NewForwarder(localPort int) *Forwarder {
 func (f *Forwarder) HandleStream(stream *mux.Stream) {
 	defer stream.Close()
 
-	reqReader := bufio.NewReader(stream)
-	req, err := http.ReadRequest(reqReader)
+	reader := readerPool.Get().(*bufio.Reader)
+	reader.Reset(stream)
+	defer readerPool.Put(reader)
+
+	req, err := http.ReadRequest(reader)
 	if err != nil {
 		if err != io.EOF {
 			log.Printf("forwarder: failed to parse request from stream: %v", err)
@@ -51,10 +77,11 @@ func (f *Forwarder) HandleStream(stream *mux.Stream) {
 		req.Body = io.NopCloser(bytes.NewReader(reqBodyBytes))
 	}
 
-	targetURL, err := url.Parse(fmt.Sprintf("http://127.0.0.1:%d%s", f.localPort, req.URL.RequestURI()))
-	if err != nil {
-		log.Printf("forwarder: invalid local url: %v", err)
-		return
+	targetURL := &url.URL{
+		Scheme:   "http",
+		Host:     fmt.Sprintf("127.0.0.1:%d", f.localPort),
+		Path:     req.URL.Path,
+		RawQuery: req.URL.RawQuery,
 	}
 
 	localReq, err := http.NewRequest(req.Method, targetURL.String(), bytes.NewReader(reqBodyBytes))
@@ -74,17 +101,17 @@ func (f *Forwarder) HandleStream(stream *mux.Stream) {
 		log.Printf("forwarder: error connecting to localhost:%d: %v", f.localPort, err)
 
 		record := &inspection.RequestRecord{
-			ID:              fmt.Sprintf("%d", time.Now().UnixNano()),
-			Timestamp:       time.Now(),
-			Method:          req.Method,
-			Path:            req.URL.Path,
-			Query:           req.URL.RawQuery,
-			Proto:           req.Proto,
-			RequestHeaders:  req.Header,
-			RequestBody:     string(reqBodyBytes),
-			StatusCode:      502,
-			StatusText:      "Bad Gateway",
-			LatencyMs:       int(latency.Milliseconds()),
+			ID:             fmt.Sprintf("%d", time.Now().UnixNano()),
+			Timestamp:      time.Now(),
+			Method:         req.Method,
+			Path:           req.URL.Path,
+			Query:          req.URL.RawQuery,
+			Proto:          req.Proto,
+			RequestHeaders: req.Header,
+			RequestBody:    string(reqBodyBytes),
+			StatusCode:     502,
+			StatusText:     "Bad Gateway",
+			LatencyMs:      int(latency.Milliseconds()),
 		}
 
 		if f.OnInspection != nil {
