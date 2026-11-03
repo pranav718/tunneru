@@ -46,6 +46,11 @@ func (s *ControlServer) Start() error {
 		if err != nil {
 			return fmt.Errorf("control server accept: %w", err)
 		}
+		if tcpConn, ok := conn.(*net.TCPConn); ok {
+			_ = tcpConn.SetNoDelay(true)
+			_ = tcpConn.SetKeepAlive(true)
+			_ = tcpConn.SetKeepAlivePeriod(15 * time.Second)
+		}
 		go s.handleClient(conn)
 	}
 }
@@ -57,7 +62,13 @@ func (s *ControlServer) startAPI() {
 
 	log.Printf("api server listening on 127.0.0.1:7002")
 
-	if err := http.ListenAndServe("127.0.0.1:7002", muxRouter); err != nil {
+	apiServer := &http.Server{
+		Addr:              "127.0.0.1:7002",
+		Handler:           muxRouter,
+		ReadHeaderTimeout: 5 * time.Second,
+		IdleTimeout:       30 * time.Second,
+	}
+	if err := apiServer.ListenAndServe(); err != nil {
 		log.Printf("api server error: %v", err)
 	}
 }
