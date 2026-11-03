@@ -15,13 +15,13 @@ type Stream struct {
 	id      uint32
 	session *Session
 
-	dataCh chan []byte // incoming data is queued here by the session's recvLoop
+	dataCh chan []byte
 
-	readBuf []byte // leftover bytes from a partially-read data chunk
+	readBuf []byte
 
 	closeMu    sync.Mutex
-	remoteEOF  bool // remote sent StreamClose
-	localClose bool // we called Close()
+	remoteEOF  bool
+	localClose bool
 	resetErr   error
 }
 
@@ -72,13 +72,10 @@ func (s *Stream) Write(p []byte) (int, error) {
 		return 0, ErrStreamClosed
 	}
 
-	payload := make([]byte, len(p)) // copy the data so the caller can reuse their buffer
-	copy(payload, p)
-
 	err := s.session.writeFrame(&frame{
 		StreamID:  s.id,
 		FrameType: frameStreamData,
-		Payload:   payload,
+		Payload:   p,
 	})
 	if err != nil {
 		return 0, err
@@ -104,11 +101,11 @@ func (s *Stream) Close() error {
 	s.session.removeStream(s.id)
 	return nil
 }
+
 func (s *Stream) deliver(data []byte) {
 	select {
 	case s.dataCh <- data:
 	default:
-		
 	}
 }
 

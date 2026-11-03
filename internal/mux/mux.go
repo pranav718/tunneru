@@ -4,10 +4,10 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"sync"
 )
 
-
-const headerSize = 9 // frame header size: 4 (stream ID) + 4 (payload length) + 1 (type) = 9 bytes
+const headerSize = 9
 
 const (
 	frameStreamOpen  byte = 0x01
@@ -22,20 +22,45 @@ type frame struct {
 	Payload   []byte
 }
 
-func writeFrame(w io.Writer, f *frame) error {
-	var header [headerSize]byte
-	binary.BigEndian.PutUint32(header[0:4], f.StreamID)
-	binary.BigEndian.PutUint32(header[4:8], uint32(len(f.Payload)))
-	header[8] = f.FrameType
+var writeBufPool = sync.Pool{
+	New: func() any {
+		b := make([]byte, 32*1024)
+		return &b
+	},
+}
 
-	if _, err := w.Write(header[:]); err != nil {
-		return fmt.Errorf("mux write header: %w", err)
+func writeFrame(w io.Writer, f *frame) error {
+	payloadLen := len(f.Payload)
+	totalLen := headerSize + payloadLen
+
+	if payloadLen == 0 {
+		var header [headerSize]byte
+		binary.BigEndian.PutUint32(header[0:4], f.StreamID)
+		binary.BigEndian.PutUint32(header[4:8], 0)
+		header[8] = f.FrameType
+		if _, err := w.Write(header[:]); err != nil {
+			return fmt.Errorf("mux write header: %w", err)
+		}
+		return nil
 	}
 
-	if len(f.Payload) > 0 {
-		if _, err := w.Write(f.Payload); err != nil {
-			return fmt.Errorf("mux write payload: %w", err)
-		}
+	var buf []byte
+	var bufPtr *[]byte
+	if totalLen <= 32*1024 {
+		bufPtr = writeBufPool.Get().(*[]byte)
+		buf = (*bufPtr)[:totalLen]
+		defer writeBufPool.Put(bufPtr)
+	} else {
+		buf = make([]byte, totalLen)
+	}
+
+	binary.BigEndian.PutUint32(buf[0:4], f.StreamID)
+	binary.BigEndian.PutUint32(buf[4:8], uint32(payloadLen))
+	buf[8] = f.FrameType
+	copy(buf[headerSize:], f.Payload)
+
+	if _, err := w.Write(buf); err != nil {
+		return fmt.Errorf("mux write frame: %w", err)
 	}
 
 	return nil
@@ -53,7 +78,6 @@ func readFrame(r io.Reader) (*frame, error) {
 	}
 
 	payloadLen := binary.BigEndian.Uint32(header[4:8])
-
 	if payloadLen > 16*1024*1024 {
 		return nil, fmt.Errorf("mux frame too large: %d bytes", payloadLen)
 	}
