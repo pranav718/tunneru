@@ -6,12 +6,20 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"sync"
+	"time"
 )
 
 type HTTPProxy struct {
 	addr     string
 	domain   string
 	registry *Registry
+}
+
+var proxyReaderPool = sync.Pool{
+	New: func() any {
+		return bufio.NewReaderSize(nil, 4096)
+	},
 }
 
 func NewHTTPProxy(addr string, domain string, registry *Registry) *HTTPProxy {
@@ -24,7 +32,13 @@ func NewHTTPProxy(addr string, domain string, registry *Registry) *HTTPProxy {
 
 func (p *HTTPProxy) Start() error {
 	log.Printf("http proxy listening on %s (domain: *.%s)", p.addr, p.domain)
-	return http.ListenAndServe(p.addr, p)
+	server := &http.Server{
+		Addr:              p.addr,
+		Handler:           p,
+		ReadHeaderTimeout: 10 * time.Second,
+		IdleTimeout:       60 * time.Second,
+	}
+	return server.ListenAndServe()
 }
 
 func (p *HTTPProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -50,13 +64,28 @@ func (p *HTTPProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	defer stream.Close()
 
+	ctx := r.Context()
+	done := make(chan struct{})
+	defer close(done)
+
+	go func() {
+		select {
+		case <-ctx.Done():
+			stream.Close()
+		case <-done:
+		}
+	}()
+
 	if err := r.Write(stream); err != nil {
 		log.Printf("proxy [%s]: failed to write request to stream: %v", subdomain, err)
 		http.Error(w, "tunneru: error forwarding request", http.StatusBadGateway)
 		return
 	}
 
-	respReader := bufio.NewReader(stream)
+	respReader := proxyReaderPool.Get().(*bufio.Reader)
+	respReader.Reset(stream)
+	defer proxyReaderPool.Put(respReader)
+
 	resp, err := http.ReadResponse(respReader, r)
 	if err != nil {
 		log.Printf("proxy [%s]: failed to read response from stream: %v", subdomain, err)
@@ -71,6 +100,10 @@ func (p *HTTPProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	w.WriteHeader(resp.StatusCode)
+
+	if flusher, ok := w.(http.Flusher); ok {
+		flusher.Flush()
+	}
 
 	if _, err := io.Copy(w, resp.Body); err != nil {
 		log.Printf("proxy [%s]: error copying response body: %v", subdomain, err)
